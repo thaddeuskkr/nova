@@ -4,6 +4,7 @@
     "description": "Link shortener created by and hosted on tkkr.dev",
     "main": "dist/index.js",
     "scripts": {
+        "start": "node dist/index.js",
         "test": "node dist/index.js | pino-pretty",
         "build": "tsc",
         "dev": "tsc --watch",

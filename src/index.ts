@@ -25,7 +25,7 @@ if (typeof databaseUrl !== 'string') {
 
 fastify.register(FastifyFormBody);
 fastify.addHook('onRequest', (request, _, done) => {
-    $.debug(`-> ${request.method} ${request.url} from ${request.ip}`);
+    $.debug(`-> ${request.method} ${request.url} from ${request.headers['X-Forwarded-For'] || request.ip}`);
     done();
 });
 

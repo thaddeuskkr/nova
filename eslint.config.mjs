@@ -61,7 +61,7 @@ export default [
             '@stylistic/new-parens': ['error', 'always'],
             '@stylistic/newline-per-chained-call': ['error', { ignoreChainWithDepth: 3 }],
             '@stylistic/no-confusing-arrow': ['error', { allowParens: true, onlyOneSimpleParam: false }],
-            '@stylistic/no-extra-parens': ['error', 'all'],
+            '@stylistic/no-extra-parens': ['error', 'all', { nestedBinaryExpressions: false }],
             '@stylistic/no-extra-semi': ['error'],
             '@stylistic/no-floating-decimal': ['error'],
             '@stylistic/no-mixed-operators': ['error', { allowSamePrecedence: true }],

@@ -1,5 +1,13 @@
+import crypto from 'crypto';
 import { Link, User } from '../models.js';
 import type { Route } from '../types.js';
+
+export const charsets = {
+    NUMBERS: '0123456789',
+    LOWERCASE: 'abcdefghijklmnopqrstuvwxyz',
+    UPPERCASE: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+    SYMBOLS: '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~',
+};
 
 export const routes: Route = (fastify, { $, config }, done) => {
     fastify.route({
@@ -16,7 +24,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 reply.code(401).send({ error: true, message: 'Invalid user token' });
                 return;
             }
-            const body = request.body as { url?: string; slugs?: string; description?: string } | undefined;
+            const body = request.body as { url?: string; slugs?: string; description?: string; public?: string; password?: string } | undefined;
             if (!body) {
                 reply.code(400).send({ error: true, message: 'Missing request body' });
                 return;
@@ -25,6 +33,8 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
+            const isPublic = body.public === 'true';
+            const password = isPublic ? null : body.password || generatePassword(16, charsets.NUMBERS + charsets.LOWERCASE + charsets.UPPERCASE);
             const slugs = body.slugs
                 .split(',')
                 .map((slug) => slug.trim())
@@ -47,18 +57,29 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 url: body.url,
                 slugs: slugs,
                 description: body.description || 'No description provided',
+                public: isPublic,
+                password,
                 user: user._id,
             });
             await link.save();
             reply.code(200).send({
                 error: false,
                 message: 'Shortened URL successfully',
-                shortUrl: `${config.baseUrl}/${link.slugs[0]}`,
+                shortUrl: `${config.baseUrl}/${link.slugs[0]}?pw=${link.password}`,
                 longUrl: link.url,
                 slugs: link.slugs,
+                public: link.public,
+                password: link.password,
             });
             $.debug(`Shortened ${link.url} (${link.slugs.join(', ')})`);
         },
     });
     done();
 };
+
+function generatePassword(length: number, charset: string): string {
+    const charsetLength = charset.length;
+    let password = '';
+    while (length--) password += charset[crypto.randomInt(charsetLength)];
+    return password;
+}

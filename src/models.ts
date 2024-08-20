@@ -4,6 +4,8 @@ const linkSchema = new mongoose.Schema({
     url: { type: String, required: true },
     slugs: [{ type: String, required: true }],
     description: { type: String, required: false },
+    public: { type: Boolean, required: false, default: true },
+    password: { type: String, required: false, default: null },
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 

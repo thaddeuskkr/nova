@@ -1,0 +1,48 @@
+{
+    "name": "ls",
+    "version": "1.0.0",
+    "description": "Link shortener created by and hosted on tkkr.dev",
+    "main": "dist/index.js",
+    "scripts": {
+        "test": "node dist/index.js | pino-pretty",
+        "build": "tsc",
+        "dev": "tsc --watch",
+        "prettier": "prettier --write ."
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/thaddeuskkr/ls.git"
+    },
+    "keywords": [
+        "link-shortener"
+    ],
+    "author": "Thaddeus Kuah <tk@tkkr.dev> (https://tkkr.dev)",
+    "license": "GPL-3.0-or-later",
+    "bugs": {
+        "url": "https://github.com/thaddeuskkr/ls/issues"
+    },
+    "homepage": "https://github.com/thaddeuskkr/ls#readme",
+    "dependencies": {
+        "@fastify/formbody": "^7.4.0",
+        "bcrypt": "^5.1.1",
+        "common-tags": "^1.8.2",
+        "dotenv": "^16.4.5",
+        "fastify": "^4.28.1",
+        "mongoose": "^8.5.3",
+        "pino": "^9.3.2"
+    },
+    "devDependencies": {
+        "@eslint/js": "^9.9.0",
+        "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+        "@types/bcrypt": "^5.0.2",
+        "@types/common-tags": "^1.8.4",
+        "@types/node": "^22.4.1",
+        "eslint": "^9.9.0",
+        "eslint-config-prettier": "^9.1.0",
+        "globals": "^15.9.0",
+        "pino-pretty": "^11.2.2",
+        "prettier": "^3.3.3",
+        "typescript": "^5.5.4",
+        "typescript-eslint": "^8.1.0"
+    }
+}

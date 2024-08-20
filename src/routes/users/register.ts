@@ -16,8 +16,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
-            const existingUser = await User.findOne({ $or: [{ username: body.username }, { email: body.username }] });
-            if (existingUser) {
+            if (await User.exists({ $or: [{ username: body.username }, { email: body.username }, { username: body.email }, { email: body.email }] })) {
                 reply.code(400).send({ error: true, message: 'Username or email already in use' });
                 return;
             }

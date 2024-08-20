@@ -1,5 +1,5 @@
-import { Link, User } from '../models';
-import type { Route } from '../types';
+import { Link, User } from '../models.js';
+import type { Route } from '../types.js';
 
 export const routes: Route = (fastify, { $, config }, done) => {
     fastify.route({

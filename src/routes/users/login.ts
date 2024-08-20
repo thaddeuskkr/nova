@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
-import { User } from '../../models';
-import type { Route } from '../../types';
+import { User } from '../../models.js';
+import type { Route } from '../../types.js';
 
 export const routes: Route = (fastify, { $ }, done) => {
     fastify.route({

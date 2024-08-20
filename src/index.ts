@@ -13,12 +13,12 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const databaseUrl = process.env['MONGODB_CONNECTION_URL'];
-const host = process.env['HOST'] || '0.0.0.0';
+const host = process.env['HOST'] || 'localhost';
 const port = process.env['PORT'] || '3000';
 const level = process.env['LOG_LEVEL'] || 'info';
-const baseUrl = process.env['BASE_URL'] || 'http://localhost:3000';
-const prohibitedSlugs = process.env['PROHIBITED_SLUGS']?.split(',') || [];
-const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '';
+const baseUrl = process.env['BASE_URL'] || `http://${host}:${port}`;
+const prohibitedSlugs = process.env['PROHIBITED_SLUGS']?.split(',') || ['api'];
+const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/';
 
 const $ = pino({ level });
 const fastify = Fastify({ logger: false });

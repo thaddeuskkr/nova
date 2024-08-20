@@ -20,7 +20,7 @@ export const routes: Route = (fastify, { $ }, done) => {
             await user.save();
             reply.code(200).send({ error: false, message: 'Logged out successfully' });
             $.debug(`${user.username} (${user.email}) logged out`);
-        }
+        },
     });
     done();
 };

@@ -1,6 +1,6 @@
+import bcrypt from 'bcrypt';
 import { User } from '../../models';
 import type { Route } from '../../types';
-import bcrypt from 'bcrypt';
 
 export const routes: Route = (fastify, { $ }, done) => {
     fastify.route({
@@ -27,12 +27,12 @@ export const routes: Route = (fastify, { $ }, done) => {
                 password: bcrypt.hashSync(body.password, 10),
                 icon: body.icon || null,
                 token: null,
-                admin: false
+                admin: false,
             });
             await user.save();
             reply.code(201).send({ error: false, message: 'Registration successful' });
             $.debug(`Registered ${user.username} (${user.email})`);
-        }
+        },
     });
     done();
 };

@@ -1,7 +1,7 @@
-import { User } from '../../models';
-import type { Route } from '../../types';
 import bcrypt from 'bcrypt';
 import crypto from 'crypto';
+import { User } from '../../models';
+import type { Route } from '../../types';
 
 export const routes: Route = (fastify, { $ }, done) => {
     fastify.route({
@@ -24,7 +24,7 @@ export const routes: Route = (fastify, { $ }, done) => {
             await user.save();
             reply.code(200).send({ error: false, message: `Logged in as ${user.username}`, token: user.token });
             $.debug(`${user.username} (${user.email}) logged in`);
-        }
+        },
     });
     done();
 };

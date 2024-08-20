@@ -4,8 +4,13 @@ import Fastify from 'fastify';
 import mongoose from 'mongoose';
 import fs from 'node:fs';
 import path from 'node:path';
+import { dirname } from 'path';
 import { pino } from 'pino';
+import { fileURLToPath } from 'url';
 import type { ConfigObject } from './types.js';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const databaseUrl = process.env['MONGODB_CONNECTION_URL'];
 const host = process.env['HOST'] || '0.0.0.0';

@@ -1,4 +1,3 @@
-import type { ConfigObject } from './types';
 import FastifyFormBody from '@fastify/formbody';
 import 'dotenv/config';
 import Fastify from 'fastify';
@@ -6,6 +5,7 @@ import mongoose from 'mongoose';
 import fs from 'node:fs';
 import path from 'node:path';
 import pino from 'pino';
+import type { ConfigObject } from './types';
 
 const databaseUrl = process.env['MONGODB_CONNECTION_URL'];
 const host = process.env['HOST'] || '0.0.0.0';
@@ -37,8 +37,8 @@ fastify.addHook('onRequest', (request, _, done) => {
                 config: {
                     baseUrl,
                     prohibitedSlugs,
-                    prohibitedCharacters: prohibitedCharacters.split('')
-                } as ConfigObject
+                    prohibitedCharacters: prohibitedCharacters.split(''),
+                } as ConfigObject,
             });
             $.debug(`Registered ${route}`);
         } catch (err) {

@@ -4,7 +4,7 @@ const linkSchema = new mongoose.Schema({
     url: { type: String, required: true },
     slugs: [{ type: String, required: true }],
     description: { type: String, required: false },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' }
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
 });
 
 const userSchema = new mongoose.Schema({
@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
     password: { type: String, required: true },
     icon: { type: String, required: false, default: null },
     token: { type: String, required: false, default: null },
-    admin: { type: Boolean, required: false, default: false }
+    admin: { type: Boolean, required: false, default: false },
 });
 
 const Link = mongoose.model('Link', linkSchema);

@@ -1,14 +1,17 @@
 import { Link } from '../models.js';
 import type { Route } from '../types.js';
 
-export const routes: Route = (fastify, _, done) => {
+export const routes: Route = (fastify, { config }, done) => {
     fastify.route({
         method: ['GET'],
         url: '*',
         handler: async (request, reply) => {
             const link = await Link.findOne({ slugs: request.url.split('?')[0]?.replace(/\//, '') });
             if (!link) {
-                reply.code(404).send('Short URL does not exist');
+                reply.code(404).send('This short URL does not exist. ' +
+                'If you believe that this is an error, please contact the owner of the URL.' +
+                '\n\n' +
+                `${config.info.name} v${config.info.version} by ${config.info.author}`);
                 return;
             }
             if (link.public) reply.code(301).redirect(link.url);

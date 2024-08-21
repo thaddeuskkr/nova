@@ -29,6 +29,7 @@ export default [
             'unicorn/no-typeof-undefined': ['error', { checkGlobalVariables: true }],
             'unicorn/no-unnecessary-polyfills': ['error', { targets: { node: 'lts' } }],
             'unicorn/no-process-exit': ['off'],
+            'unicorn/no-null': ['off'],
 
             /* @stylistic */
             '@stylistic/array-bracket-newline': ['error', 'consistent'],

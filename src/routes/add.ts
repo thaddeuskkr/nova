@@ -1,13 +1,6 @@
-import crypto from 'node:crypto';
 import { Link, User } from '../models.js';
 import type { Route } from '../types.js';
-
-export const charsets = {
-    NUMBERS: '0123456789',
-    LOWERCASE: 'abcdefghijklmnopqrstuvwxyz',
-    UPPERCASE: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-    SYMBOLS: '!"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~',
-};
+import { generatePassword } from '../utils.js';
 
 export const routes: Route = (fastify, { $, config }, done) => {
     fastify.route({
@@ -33,8 +26,8 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
-            const isPublic = body.public === 'true';
-            const password = isPublic ? null : body.password || generatePassword(16, charsets.NUMBERS + charsets.LOWERCASE + charsets.UPPERCASE);
+            const isPublic = body.public ? body.public === 'true' : true;
+            const password = isPublic ? null : body.password || generatePassword(16, ['numbers', 'lowercase', 'uppercase']);
             const slugs = body.slugs
                 .split(',')
                 .map((slug) => slug.trim())
@@ -76,10 +69,3 @@ export const routes: Route = (fastify, { $, config }, done) => {
     });
     done();
 };
-
-function generatePassword(length: number, charset: string): string {
-    const charsetLength = charset.length;
-    let password = '';
-    while (length--) password += charset[crypto.randomInt(charsetLength)];
-    return password;
-}

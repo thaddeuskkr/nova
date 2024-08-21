@@ -18,11 +18,14 @@
         "link-shortener"
     ],
     "author": "thaddeuskkr",
-    "license": "GPL-3.0-or-later",
+    "license": "AGPL-3.0-or-later",
     "bugs": {
         "url": "https://github.com/thaddeuskkr/ls/issues"
     },
     "homepage": "https://github.com/thaddeuskkr/ls#readme",
+    "engines": {
+        "node": ">=18"
+    },
     "dependencies": {
         "@fastify/formbody": "^7.4.0",
         "bcrypt": "^5.1.1",

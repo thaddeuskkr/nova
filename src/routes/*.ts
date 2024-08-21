@@ -7,7 +7,10 @@ export const routes: Route = (fastify, _, done) => {
         url: '*',
         handler: async (request, reply) => {
             const link = await Link.findOne({ slugs: request.url.split('?')[0]?.replace(/\//, '') });
-            if (!link) return reply.code(404).send({ error: true, message: 'Not found' });
+            if (!link) {
+                reply.code(404).send('Short URL does not exist');
+                return;
+            }
             if (link.public) reply.code(301).redirect(link.url);
             else {
                 const query = request.query as { password?: string; pw?: string; pass?: string };

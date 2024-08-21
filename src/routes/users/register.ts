@@ -24,8 +24,8 @@ export const routes: Route = (fastify, { $ }, done) => {
                 username: body.username,
                 email: body.email,
                 password: bcrypt.hashSync(body.password, 10),
-                icon: body.icon || null,
-                token: null,
+                icon: body.icon || undefined,
+                token: undefined,
                 admin: false,
             });
             await user.save();

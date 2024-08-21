@@ -22,20 +22,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing request body' });
                 return;
             }
-            if (!body.user) {
-                if (await User.exists({ $or: [{ username: body.username }, { email: body.username }, { username: body.email }, { email: body.email }] })) {
-                    reply.code(400).send({ error: true, message: 'Username or email already in use' });
-                    return;
-                }
-                await User.findByIdAndUpdate(user._id, {
-                    username: body.username || user.username,
-                    email: body.email || user.email,
-                    password: body.password ? bcrypt.hashSync(body.password, 10) : user.password,
-                    icon: body.icon ? body.icon === 'null' ? null : body.icon : user.icon,
-                });
-                reply.code(200).send({ error: false, message: 'Edited user successfully' });
-                $.debug(`${user.username} (${user.email}) edited`);
-            } else {
+            if (body.user) {
                 if (!user.admin) {
                     reply.code(401).send({ error: true, message: 'You do not have permission to edit other users' });
                     return;
@@ -53,7 +40,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                     username: body.username || userToEdit.username,
                     email: body.email || userToEdit.email,
                     password: body.password ? bcrypt.hashSync(body.password, 10) : userToEdit.password,
-                    icon: body.icon ? body.icon === 'null' ? null : body.icon : userToEdit.icon,
+                    icon: body.icon ? (body.icon === 'undefined' ? undefined : body.icon) : userToEdit.icon,
                     admin: body.admin ? body.admin === 'true' : userToEdit.admin,
                 }, { new: true });
                 if (!editedUser) {
@@ -62,6 +49,19 @@ export const routes: Route = (fastify, { $ }, done) => {
                 }
                 reply.code(200).send({ error: false, message: 'Edited user successfully' });
                 $.debug(`${editedUser.username} (${editedUser.email}) edited by ${user.username} (${user.email})`);
+            } else {
+                if (await User.exists({ $or: [{ username: body.username }, { email: body.username }, { username: body.email }, { email: body.email }] })) {
+                    reply.code(400).send({ error: true, message: 'Username or email already in use' });
+                    return;
+                }
+                await User.findByIdAndUpdate(user._id, {
+                    username: body.username || user.username,
+                    email: body.email || user.email,
+                    password: body.password ? bcrypt.hashSync(body.password, 10) : user.password,
+                    icon: body.icon ? (body.icon === 'undefined' ? undefined : body.icon) : user.icon,
+                });
+                reply.code(200).send({ error: false, message: 'Edited user successfully' });
+                $.debug(`${user.username} (${user.email}) edited`);
             }
         },
     });

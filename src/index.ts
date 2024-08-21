@@ -5,13 +5,12 @@ import mongoose from 'mongoose';
 import fs from 'node:fs';
 import { createRequire } from 'node:module';
 import path from 'node:path';
-import { dirname } from 'path';
+import { fileURLToPath } from 'node:url';
 import { pino } from 'pino';
-import { fileURLToPath } from 'url';
 import type { Config } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const __dirname = path.dirname(__filename);
 
 const databaseUrl = process.env['MONGODB_CONNECTION_URL'];
 const host = process.env['HOST'] || 'localhost';
@@ -24,9 +23,8 @@ const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/
 const $ = pino({ level });
 const fastify = Fastify({ logger: false });
 
-if (typeof databaseUrl !== 'string') {
-    $.fatal('Environment variable MONGODB_CONNECTION_URL not set, exiting');
-    process.exit(1);
+if (!databaseUrl) {
+    throw new Error('Environment variable MONGODB_CONNECTION_URL not set, exiting');
 }
 
 const require = createRequire(import.meta.url);
@@ -49,46 +47,43 @@ fastify.addHook('onRequest', (request, reply, done) => {
     done();
 });
 
-(async () => {
-    for (const route of readFiles(path.join(__dirname, 'routes'))) {
-        try {
-            fastify.register((await import(route)).routes, {
-                $,
-                config: {
-                    info: { name, author, version },
-                    baseUrl,
-                    prohibitedSlugs,
-                    prohibitedCharacters: prohibitedCharacters.split(''),
-                } as Config,
-            });
-            $.debug(`Registered ${route}`);
-        } catch (err) {
-            $.warn(`Failed to register ${route}`);
-            if (err instanceof Error && err.message) $.warn(err.message);
-        }
-    }
-
+for (const route of readFiles(path.join(__dirname, 'routes'))) {
     try {
-        await mongoose.connect(databaseUrl, {});
-        $.debug(`Connected to database at ${mongoose.connection.host}:${mongoose.connection.port}/${mongoose.connection.name}`);
-    } catch (err) {
-        $.fatal('Failed to connect to MongoDB');
-        $.fatal(err);
-        process.exit();
+        const imported = await import(route);
+        await fastify.register(imported.routes, {
+            $,
+            config: {
+                info: { name, author, version },
+                baseUrl,
+                prohibitedSlugs,
+                prohibitedCharacters: [...prohibitedCharacters],
+            } as Config,
+        });
+        $.debug(`Registered ${route}`);
+    } catch (error) {
+        $.warn(`Failed to register ${route}`);
+        if (error instanceof Error && error.message) $.warn(error.message);
     }
+}
 
-    try {
-        await fastify.listen({ host, port: Number(port) });
-        $.debug(`Server listening at ${host}:${port}`);
-    } catch (err) {
-        $.fatal('Failed to start web server');
-        $.fatal(err);
-        process.exit();
-    }
+try {
+    await mongoose.connect(databaseUrl, {});
+    $.debug(`Connected to database at ${mongoose.connection.host}:${mongoose.connection.port}/${mongoose.connection.name}`);
+} catch (error) {
+    $.fatal(error);
+    process.exit(1);
+}
 
-    ready = true;
-    $.info('Ready!');
-})();
+try {
+    await fastify.listen({ host, port: Number(port) });
+    $.debug(`Server listening at ${host}:${port}`);
+} catch (error) {
+    $.fatal(error);
+    process.exit(1);
+}
+
+ready = true;
+$.info('Ready!');
 
 for (const event of ['SIGINT', 'SIGTERM', 'SIGUSR2']) {
     process.on(event, () => {
@@ -98,17 +93,17 @@ for (const event of ['SIGINT', 'SIGTERM', 'SIGUSR2']) {
 }
 
 for (const event of ['unhandledRejection', 'uncaughtException']) {
-    process.on(event, (err) => {
-        $.fatal(err);
+    process.on(event, (error) => {
+        $.fatal(error);
         process.exit(1);
     });
 }
 
-function readFiles(dir: string): string[] {
+function readFiles(directory: string): string[] {
     let files: string[] = [];
-    for (const item of fs.readdirSync(dir)) {
-        const fullPath = path.join(dir, item);
-        if (fs.statSync(fullPath).isDirectory()) files = files.concat(readFiles(fullPath));
+    for (const item of fs.readdirSync(directory)) {
+        const fullPath = path.join(directory, item);
+        if (fs.statSync(fullPath).isDirectory()) files = [...files, ...readFiles(fullPath)];
         else files.push(fullPath);
     }
     return files;

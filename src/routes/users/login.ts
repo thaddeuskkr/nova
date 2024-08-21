@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import crypto from 'crypto';
+import crypto from 'node:crypto';
 import { User } from '../../models.js';
 import type { Route } from '../../types.js';
 

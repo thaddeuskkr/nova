@@ -23,14 +23,20 @@ const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/
 const $ = pino({ level });
 const fastify = Fastify({ logger: false });
 
+let ready = false;
+
 if (typeof databaseUrl !== 'string') {
     $.fatal('Environment variable MONGODB_CONNECTION_URL not set, exiting');
     process.exit(1);
 }
 
 fastify.register(FastifyFormBody);
-fastify.addHook('onRequest', (request, _, done) => {
+fastify.addHook('onRequest', (request, reply, done) => {
     $.debug(`-> ${request.method} ${request.url} from ${request.headers['X-Forwarded-For'] || request.ip}`);
+    if (ready == false) {
+        reply.code(503).send({ error: true, message: 'Server not ready for requests' });
+        return;
+    }
     done();
 });
 
@@ -54,7 +60,7 @@ fastify.addHook('onRequest', (request, _, done) => {
 
     try {
         await mongoose.connect(databaseUrl, {});
-        $.info('Connected to MongoDB');
+        $.debug(`Connected to database at ${mongoose.connection.host}:${mongoose.connection.port}/${mongoose.connection.name}`);
     } catch (err) {
         $.fatal('Failed to connect to MongoDB');
         $.fatal(err);
@@ -63,13 +69,28 @@ fastify.addHook('onRequest', (request, _, done) => {
 
     try {
         await fastify.listen({ host, port: Number(port) });
-        $.info(`Server listening at ${host}:${port}`);
+        $.debug(`Server listening at ${host}:${port}`);
     } catch (err) {
         $.fatal('Failed to start web server');
         $.fatal(err);
         process.exit();
     }
+
+    ready = true;
+    $.info('Ready!');
 })();
+
+process.on('SIGTERM', () => {
+    $.info('Received SIGTERM, exiting');
+    process.exit();
+});
+
+for (const event of ['unhandledRejection', 'uncaughtException']) {
+    process.on(event, (err) => {
+        $.fatal(err);
+        process.exit(1);
+    });
+}
 
 function readFiles(dir: string): string[] {
     let files: string[] = [];

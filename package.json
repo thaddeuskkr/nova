@@ -1,7 +1,7 @@
 {
-    "name": "ls",
+    "name": "nova",
     "version": "0.1.1",
-    "description": "Simple link shortener created by and hosted on tkkr.dev",
+    "description": "A simple link shortener created by and hosted on tkkr.dev",
     "main": "dist/index.js",
     "type": "module",
     "scripts": {
@@ -17,7 +17,7 @@
     "keywords": [
         "link-shortener"
     ],
-    "author": "Thaddeus Kuah <tk@tkkr.dev> (https://tkkr.dev)",
+    "author": "thaddeuskkr",
     "license": "GPL-3.0-or-later",
     "bugs": {
         "url": "https://github.com/thaddeuskkr/ls/issues"

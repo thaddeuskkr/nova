@@ -1,6 +1,6 @@
 {
     "name": "nova",
-    "version": "0.2.0",
+    "version": "0.2.1-alpha",
     "description": "A simple link shortener created by and hosted on tkkr.dev",
     "main": "dist/index.js",
     "type": "module",

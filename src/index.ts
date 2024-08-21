@@ -82,7 +82,7 @@ fastify.addHook('onRequest', (request, reply, done) => {
 
 for (const event of ['SIGINT', 'SIGTERM', 'SIGUSR2']) {
     process.on(event, async () => {
-        $.info(`Received ${event}, exiting`);
+        $.warn(`Received ${event}, exiting`);
         await fastify.close();
         await mongoose.connection.close();
         process.exit(0);

@@ -23,10 +23,6 @@ export const routes: Route = (fastify, { $ }, done) => {
                 return;
             }
             if (!body.user) {
-                if (!user.admin && body.admin && body.admin === 'true') {
-                    reply.code(401).send({ error: true, message: 'You do not have permission to edit user permissions' });
-                    return;
-                }
                 if (await User.exists({ $or: [{ username: body.username }, { email: body.username }, { username: body.email }, { email: body.email }] })) {
                     reply.code(400).send({ error: true, message: 'Username or email already in use' });
                     return;

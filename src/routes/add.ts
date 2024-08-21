@@ -65,7 +65,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
             reply.code(200).send({
                 error: false,
                 message: 'Shortened URL successfully',
-                shortUrl: `${config.baseUrl}/${link.slugs[0]}?pw=${link.password}`,
+                shortUrl: `${config.baseUrl}/${link.slugs[0]}${link.password ? `?pw=${link.password}` : ''}`,
                 longUrl: link.url,
                 slugs: link.slugs,
                 public: link.public,

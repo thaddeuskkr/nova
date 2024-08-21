@@ -6,7 +6,7 @@ const linkSchema = new mongoose.Schema({
     description: { type: String, required: false },
     public: { type: Boolean, required: false, default: true },
     password: { type: String, required: false, default: null },
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
 const userSchema = new mongoose.Schema({

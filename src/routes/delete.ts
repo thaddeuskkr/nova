@@ -25,13 +25,13 @@ export const routes: Route = (fastify, { $ }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
-            const slugs = body.slugs?.split(',').map((slug) => slug.trim()) || [];
+            const slugs = body.slugs.split(',').map((slug) => slug.trim()) || [];
             const link = await Link.findOne({ slugs: { $in: slugs } });
             if (!link) {
                 reply.code(400).send({ error: true, message: 'Short URL does not exist' });
                 return;
             }
-            if (!link.user?.equals(user._id) && !user.admin) {
+            if (!link.user.equals(user._id) && !user.admin) {
                 reply.code(401).send({ error: true, message: 'You do not have permission to delete this short URL' });
                 return;
             }

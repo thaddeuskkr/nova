@@ -40,7 +40,7 @@ let ready = false;
 
 fastify.register(FastifyFormBody);
 fastify.addHook('onRequest', (request, reply, done) => {
-    $.debug(`-> ${request.method} ${request.url} from ${request.headers['X-Forwarded-For'] || request.ip}`);
+    $.debug(`-> ${request.method} ${request.url} from ${request.headers['x-forwarded-for'] || request.ip}`);
     if (ready == false) {
         reply.code(503).send({ error: true, message: 'Server not ready for requests' });
         return;

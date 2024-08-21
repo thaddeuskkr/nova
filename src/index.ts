@@ -80,14 +80,20 @@ fastify.addHook('onRequest', (request, reply, done) => {
     $.info('Ready!');
 })();
 
-process.on('SIGTERM', () => {
-    $.info('Received SIGTERM, exiting');
-    process.exit();
-});
+for (const event of ['SIGINT', 'SIGTERM', 'SIGUSR2']) {
+    process.on(event, async () => {
+        $.info(`Received ${event}, exiting`);
+        await fastify.close();
+        await mongoose.connection.close();
+        process.exit(0);
+    });
+}
 
 for (const event of ['unhandledRejection', 'uncaughtException']) {
-    process.on(event, (err) => {
+    process.on(event, async (err) => {
         $.fatal(err);
+        await fastify.close();
+        await mongoose.connection.close();
         process.exit(1);
     });
 }

@@ -7,7 +7,7 @@ import path from 'node:path';
 import { dirname } from 'path';
 import { pino } from 'pino';
 import { fileURLToPath } from 'url';
-import type { ConfigObject } from './types.js';
+import type { Config } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -43,7 +43,7 @@ fastify.addHook('onRequest', (request, _, done) => {
                     baseUrl,
                     prohibitedSlugs,
                     prohibitedCharacters: prohibitedCharacters.split(''),
-                } as ConfigObject,
+                } as Config,
             });
             $.debug(`Registered ${route}`);
         } catch (err) {

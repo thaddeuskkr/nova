@@ -5,7 +5,7 @@ import type { Route } from '../../types.js';
 export const routes: Route = (fastify, { $ }, done) => {
     fastify.route({
         method: ['POST'],
-        url: '/api/users/edit',
+        url: '/api/users/update',
         handler: async (request, reply) => {
             if (typeof request.headers.authorization !== 'string') {
                 reply.code(400).send({ error: true, message: 'This route requires the Authorization header to be set to a user token' });

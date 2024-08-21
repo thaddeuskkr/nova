@@ -40,7 +40,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                     username: body.username || userToEdit.username,
                     email: body.email || userToEdit.email,
                     password: body.password ? bcrypt.hashSync(body.password, 10) : userToEdit.password,
-                    icon: body.icon ? (body.icon === 'undefined' ? undefined : body.icon) : userToEdit.icon,
+                    icon: body.icon ? (body.icon === 'null' ? null : body.icon) : userToEdit.icon,
                     admin: body.admin ? body.admin === 'true' : userToEdit.admin,
                 }, { new: true });
                 if (!editedUser) {
@@ -58,7 +58,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                     username: body.username || user.username,
                     email: body.email || user.email,
                     password: body.password ? bcrypt.hashSync(body.password, 10) : user.password,
-                    icon: body.icon ? (body.icon === 'undefined' ? undefined : body.icon) : user.icon,
+                    icon: body.icon ? (body.icon === 'null' ? null : body.icon) : user.icon,
                 });
                 reply.code(200).send({ error: false, message: 'Edited user successfully' });
                 $.debug(`${user.username} (${user.email}) edited`);

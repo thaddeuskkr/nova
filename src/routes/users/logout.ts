@@ -11,7 +11,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                 return;
             }
             const token = request.headers.authorization;
-            const user = await User.findOneAndUpdate({ token }, { token: undefined });
+            const user = await User.findOneAndUpdate({ token }, { token: null });
             if (!user) {
                 reply.code(401).send({ error: true, message: 'Invalid user token' });
                 return;

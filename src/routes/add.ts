@@ -34,7 +34,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 return;
             }
             const isPublic = body.public === 'true';
-            const password = isPublic ? undefined : body.password || generatePassword(16, charsets.NUMBERS + charsets.LOWERCASE + charsets.UPPERCASE);
+            const password = isPublic ? null : body.password || generatePassword(16, charsets.NUMBERS + charsets.LOWERCASE + charsets.UPPERCASE);
             const slugs = body.slugs
                 .split(',')
                 .map((slug) => slug.trim())
@@ -56,7 +56,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
             const link = new Link({
                 url: body.url,
                 slugs: slugs,
-                description: body.description || undefined,
+                description: body.description || null,
                 public: isPublic,
                 password,
                 user: user._id,

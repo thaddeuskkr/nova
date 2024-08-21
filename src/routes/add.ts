@@ -61,6 +61,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 shortUrl: `${config.baseUrl}/${link.slugs[0]}${link.password ? `?pw=${link.password}` : ''}`,
                 longUrl: link.url,
                 slugs: link.slugs,
+                description: link.description,
                 public: link.public,
                 password: link.password,
             });

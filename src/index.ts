@@ -24,7 +24,8 @@ const $ = pino({ level });
 const fastify = Fastify({ logger: false });
 
 if (!databaseUrl) {
-    throw new Error('Environment variable MONGODB_CONNECTION_URL not set, exiting');
+    $.fatal('Environment variable MONGODB_CONNECTION_URL not set, exiting');
+    process.exit(1);
 }
 
 const require = createRequire(import.meta.url);

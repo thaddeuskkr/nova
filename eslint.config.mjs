@@ -1,13 +1,19 @@
 import js from '@eslint/js';
 import stylistic from '@stylistic/eslint-plugin';
+import eslintPluginUnicorn from 'eslint-plugin-unicorn';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 
 export default [
+    {
+        ignores: ['**/node_modules/', '**/dist/'],
+    },
     js.configs.recommended,
     ...ts.configs.recommended,
+    stylistic.configs['all-flat'],
+    eslintPluginUnicorn.configs['flat/all'],
     {
-        files: ['**/*.{js,mjs,cjs,ts}'],
+        files: ['**/*.{js,cjs,mjs,ts}'],
         languageOptions: {
             globals: { ...globals.node },
         },
@@ -15,6 +21,15 @@ export default [
             '@stylistic': stylistic,
         },
         rules: {
+            'unicorn/better-regex': ['error', { sortCharacterClasses: true }],
+            'unicorn/consistent-function-scoping': ['error', { checkArrowFunctions: true }],
+            'unicorn/expiring-todo-comments': ['error', { allowWarningComments: false }],
+            'unicorn/filename-case': ['error', { cases: { camelCase: true, pascalCase: true } }],
+            'unicorn/no-array-reduce': ['error', { allowSimpleOperations: false }],
+            'unicorn/no-typeof-undefined': ['error', { checkGlobalVariables: true }],
+            'unicorn/no-unnecessary-polyfills': ['error', { targets: { node: 'lts' } }],
+
+            /* @stylistic */
             '@stylistic/array-bracket-newline': ['error', 'consistent'],
             '@stylistic/array-bracket-spacing': ['error', 'never'],
             '@stylistic/array-element-newline': ['error', 'consistent'],
@@ -35,16 +50,13 @@ export default [
             '@stylistic/implicit-arrow-linebreak': ['error', 'beside'],
             '@stylistic/indent': ['error', 4],
             '@stylistic/indent-binary-ops': ['error', 4],
-
-            // Omitted: JSX rules
-
             '@stylistic/key-spacing': ['error', { beforeColon: false, afterColon: true, mode: 'strict' }],
             '@stylistic/keyword-spacing': ['error', { before: true, after: true }],
             '@stylistic/line-comment-position': ['error', 'above'],
             '@stylistic/linebreak-style': ['error', 'unix'],
             '@stylistic/lines-around-comment': [
                 'error',
-                { beforeBlockComment: true, afterBlockComment: false, beforeLineComment: true, afterLineComment: false },
+                { beforeBlockComment: false, afterBlockComment: false, beforeLineComment: true, afterLineComment: false },
             ],
             '@stylistic/lines-between-class-members': ['error', 'always'],
             '@stylistic/max-len': [
@@ -61,16 +73,11 @@ export default [
             '@stylistic/new-parens': ['error', 'always'],
             '@stylistic/newline-per-chained-call': ['error', { ignoreChainWithDepth: 3 }],
             '@stylistic/no-confusing-arrow': ['error', { allowParens: true, onlyOneSimpleParam: false }],
-            '@stylistic/no-extra-parens': ['error', 'all', { nestedBinaryExpressions: false }],
-            '@stylistic/no-extra-semi': ['error'],
-            '@stylistic/no-floating-decimal': ['error'],
+            '@stylistic/no-extra-parens': ['error', 'functions'],
             '@stylistic/no-mixed-operators': ['error', { allowSamePrecedence: true }],
-            '@stylistic/no-mixed-spaces-and-tabs': ['error'],
             '@stylistic/no-multi-spaces': ['error', { exceptions: { Property: false } }],
             '@stylistic/no-multiple-empty-lines': ['error', { max: 2, maxEOF: 1, maxBOF: 0 }],
-            '@stylistic/no-tabs': ['error'],
             '@stylistic/no-trailing-spaces': ['error', { skipBlankLines: false, ignoreComments: false }],
-            '@stylistic/no-whitespace-before-property': ['error'],
             '@stylistic/nonblock-statement-body-position': ['error', 'beside'],
             '@stylistic/object-curly-newline': ['error', { multiline: true, consistent: true }],
             '@stylistic/object-curly-spacing': ['error', 'always', { arraysInObjects: true, objectsInObjects: true }],
@@ -88,17 +95,13 @@ export default [
             '@stylistic/space-before-blocks': ['error', 'always'],
             '@stylistic/space-before-function-paren': ['error', { anonymous: 'always', named: 'never', asyncArrow: 'always' }],
             '@stylistic/space-in-parens': ['error', 'never'],
-            '@stylistic/space-infix-ops': ['error'],
             '@stylistic/space-unary-ops': ['error', { words: true, nonwords: false }],
             '@stylistic/spaced-comment': ['error', 'always', { exceptions: ['-', '+'], markers: ['=', '!'] }],
             '@stylistic/switch-colon-spacing': ['error', { after: true, before: false }],
             '@stylistic/template-curly-spacing': ['error', 'never'],
             '@stylistic/template-tag-spacing': ['error', 'never'],
             '@stylistic/type-annotation-spacing': ['error', { before: false, after: true, overrides: { arrow: { before: true, after: true } } }],
-            '@stylistic/type-generic-spacing': ['error'],
-            '@stylistic/type-named-tuple-spacing': ['error'],
             '@stylistic/wrap-iife': ['error', 'inside'],
-            '@stylistic/wrap-regex': ['error'],
             '@stylistic/yield-star-spacing': ['error', { before: true, after: false }],
         },
     },

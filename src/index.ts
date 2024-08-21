@@ -3,6 +3,7 @@ import 'dotenv/config';
 import Fastify from 'fastify';
 import mongoose from 'mongoose';
 import fs from 'node:fs';
+import { createRequire } from 'node:module';
 import path from 'node:path';
 import { dirname } from 'path';
 import { pino } from 'pino';
@@ -23,12 +24,20 @@ const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/
 const $ = pino({ level });
 const fastify = Fastify({ logger: false });
 
-let ready = false;
-
 if (typeof databaseUrl !== 'string') {
     $.fatal('Environment variable MONGODB_CONNECTION_URL not set, exiting');
     process.exit(1);
 }
+
+const require = createRequire(import.meta.url);
+const name = (require('../package.json').name as string).charAt(0).toUpperCase() + (require('../package.json').name as string).slice(1);
+const author = require('../package.json').author as string;
+const version = require('../package.json').version as string;
+
+$.info(`${name} v${version} by ${author}`);
+$.info(`Node.js ${process.version} • Fastify v${fastify.version} • Mongoose v${mongoose.version}`);
+
+let ready = false;
 
 fastify.register(FastifyFormBody);
 fastify.addHook('onRequest', (request, reply, done) => {
@@ -46,6 +55,7 @@ fastify.addHook('onRequest', (request, reply, done) => {
             fastify.register((await import(route)).routes, {
                 $,
                 config: {
+                    info: { name, author, version },
                     baseUrl,
                     prohibitedSlugs,
                     prohibitedCharacters: prohibitedCharacters.split(''),
@@ -81,19 +91,15 @@ fastify.addHook('onRequest', (request, reply, done) => {
 })();
 
 for (const event of ['SIGINT', 'SIGTERM', 'SIGUSR2']) {
-    process.on(event, async () => {
+    process.on(event, () => {
         $.warn(`Received ${event}, exiting`);
-        await fastify.close();
-        await mongoose.connection.close();
         process.exit(0);
     });
 }
 
 for (const event of ['unhandledRejection', 'uncaughtException']) {
-    process.on(event, async (err) => {
+    process.on(event, (err) => {
         $.fatal(err);
-        await fastify.close();
-        await mongoose.connection.close();
         process.exit(1);
     });
 }

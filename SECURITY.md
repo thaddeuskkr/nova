@@ -11,11 +11,10 @@ Therefore, any code in the `main` branch is supported, and a vulnerability can b
 
 ## Reporting a Vulnerability
 
-For severe vulnerabilities that affect all instances of Nova, please do not disclose them here. 
-Instead, contact me through the contact form [here](https://www.tkkr.dev/contact) with details about the vulnerability, and I will get back to you by email within 24 hours after you submit the form. 
-If you would not like to be contacted by email, please state antoher way to contact you in the `Message` field.
-  
-For vulnerabilities that are less severe and can be publicly disclosed, please [create an issue](https://github.com/thaddeuskkr/nova/issues/new/choose) instead.
+**Please do not publicly disclose vulnerabilities.**
+
+Instead, report a vulnerability privately [here](https://github.com/thaddeuskkr/nova/security/advisories/new).  
+If the vulnerability you've discovered is *severe*, do also contact me using [this form](https://www.tkkr.dev/contact), and I will get back to you within 24 hours.
 
 ## What counts as a severe vulnerability?
 * Retrieval of any user information (of other users) such as passwords and emails

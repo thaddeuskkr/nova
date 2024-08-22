@@ -74,7 +74,7 @@ services:
 * Clone this repository
 
   ```sh
-  git clone https://github.com/thaddeuskkr/ls.git && cd ls
+  git clone https://github.com/thaddeuskkr/nova.git && cd nova
   ```
 
 * Install all dependencies using NPM

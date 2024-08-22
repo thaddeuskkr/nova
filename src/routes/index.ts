@@ -6,7 +6,7 @@ export const routes: Route = (fastify, { config }, done) => {
         url: '/',
         handler: async (request, reply) => {
             if (config.baseUrlRedirect.length > 0) {
-                reply.code(301).redirect(config.baseUrlRedirect);
+                reply.code(307).redirect(config.baseUrlRedirect);
                 return;
             }
             reply.code(200).send(`${config.info.name} v${config.info.version} by ${config.info.author}` +

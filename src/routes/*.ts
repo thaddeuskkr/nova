@@ -16,7 +16,7 @@ export const routes: Route = (fastify, { config }, done) => {
                 'https://github.com/thaddeuskkr/nova');
                 return;
             }
-            if (link.public) reply.code(301).redirect(link.url);
+            if (link.public) reply.code(307).redirect(link.url);
             else {
                 const query = request.query as { password?: string; pw?: string; pass?: string };
                 if (!query || (!query.password && !query.pw && !query.pass)) {
@@ -36,7 +36,7 @@ export const routes: Route = (fastify, { config }, done) => {
                     'https://github.com/thaddeuskkr/nova');
                     return;
                 }
-                reply.code(301).redirect(link.url);
+                reply.code(307).redirect(link.url);
             }
         },
     });

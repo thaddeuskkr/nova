@@ -5,6 +5,7 @@ Nova is a simple link shortener created in TypeScript that runs on Node.js.
 
 ## Features
 
+* An API that is easy to use and understand
 * User management
 * Password-protected short URLs
 

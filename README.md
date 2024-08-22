@@ -95,3 +95,16 @@ services:
   ```sh
   npm run build && npm start
   ```
+
+## Contributing
+
+**Contributions of all sorts are accepted and greatly appreciated.**
+
+To contribute to this codebase, do the following:
+
+1. [Create a fork](https://github.com/thaddeuskkr/nova/fork) of this repository
+2. Follow the [setup process](#setup-development) above, but clone your fork instead
+3. Push the modified code to your fork of this repository
+4. Create a pull request to the `main` branch
+
+To suggest a new feature or report a bug in Nova, please [create an issue](https://github.com/thaddeuskkr/nova/issues/new/choose).

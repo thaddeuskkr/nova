@@ -2,6 +2,7 @@ FROM node:lts-alpine AS base
 
 WORKDIR /ls
 COPY package.json package-lock.json .
+COPY assets/ assets/
 
 CMD ["node", "dist/index.js"]
 

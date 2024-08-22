@@ -18,7 +18,8 @@ const port = process.env['PORT'] || '3000';
 const level = process.env['LOG_LEVEL'] || 'info';
 const baseUrl = process.env['BASE_URL'] || `http://${host}:${port}`;
 const baseUrlRedirect = process.env['BASE_URL_REDIRECT'] || '';
-const prohibitedSlugs = process.env['PROHIBITED_SLUGS']?.split(',') || ['api'];
+const allowedHosts = process.env['ALLOWED_HOSTS']?.split(',').filter((element) => element.length > 0) || [];
+const prohibitedSlugs = process.env['PROHIBITED_SLUGS']?.split(',').filter((element) => element.length > 0) || ['api'];
 const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/';
 
 const $ = pino({ level });
@@ -41,9 +42,22 @@ let ready = false;
 
 fastify.register(FastifyFormBody);
 fastify.addHook('onRequest', (request, reply, done) => {
+    if (allowedHosts.length > 0 && !allowedHosts.includes(request.hostname)) {
+        reply.code(403).send(`${request.hostname} is not in the list of allowed hosts.` +
+        '\n\n' +
+        `${name} v${version} by ${author}` +
+        '\n' +
+        'https://github.com/thaddeuskkr/nova');
+        $.debug(`-> [${request.hostname}] Rejected ${request.method} ${request.url} from ${request.headers['x-forwarded-for'] || request.ip}`);
+        return;
+    }
     $.debug(`-> [${request.hostname}] ${request.method} ${request.url} from ${request.headers['x-forwarded-for'] || request.ip}`);
     if (ready == false) {
-        reply.code(503).send({ error: true, message: 'Server not ready for requests' });
+        reply.code(503).send('Server is not ready for requests.' +
+        '\n\n' +
+        `${name} v${version} by ${author}` +
+        '\n' +
+        'https://github.com/thaddeuskkr/nova');
         return;
     }
     done();

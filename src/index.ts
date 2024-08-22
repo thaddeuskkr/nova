@@ -17,6 +17,7 @@ const host = process.env['HOST'] || 'localhost';
 const port = process.env['PORT'] || '3000';
 const level = process.env['LOG_LEVEL'] || 'info';
 const baseUrl = process.env['BASE_URL'] || `http://${host}:${port}`;
+const baseUrlRedirect = process.env['BASE_URL_REDIRECT'] || '';
 const prohibitedSlugs = process.env['PROHIBITED_SLUGS']?.split(',') || ['api'];
 const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/';
 
@@ -56,6 +57,7 @@ for (const route of readFiles(path.join(__dirname, 'routes'))) {
             config: {
                 info: { name, author, version },
                 baseUrl,
+                baseUrlRedirect,
                 prohibitedSlugs,
                 prohibitedCharacters: [...prohibitedCharacters],
             } as Config,

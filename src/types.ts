@@ -9,6 +9,7 @@ export type Config = {
         version: string;
     };
     baseUrl: string;
+    baseUrlRedirect: string;
     prohibitedSlugs: string[];
     prohibitedCharacters: string[];
 };

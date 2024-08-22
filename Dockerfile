@@ -1,17 +1,17 @@
 FROM node:lts-alpine AS base
 
-WORKDIR /ls
+WORKDIR /nova
 COPY package.json package-lock.json .
 COPY assets/ assets/
 
 CMD ["node", "dist/index.js"]
 
 FROM node:lts-alpine AS builder
-WORKDIR /ls
+WORKDIR /nova
 COPY . .
 RUN npm install --omit=dev && cp -R node_modules prod_node_modules
 RUN npm install && npm run build
 
 FROM base AS copier
-COPY --from=builder /ls/prod_node_modules /ls/node_modules
-COPY --from=builder /ls/dist /ls/dist
+COPY --from=builder /nova/prod_node_modules /nova/node_modules
+COPY --from=builder /nova/dist /nova/dist

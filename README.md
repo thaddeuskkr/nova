@@ -19,7 +19,7 @@ Do note, the Docker configurations are the exact same, but with different method
 Run the following command directly. Do replace the environment variables (`-e`) and port mapping (`-p`) with a configuration more relevant to you.
 
 ```sh
-docker run --name nova --restart unless-stopped -p 80:3000 -e MONGODB_CONNECTION_URL="<YOUR_DATABASE_URL>" -e HOST="localhost" -e PORT="3000" -e BASE_URL="" -e BASE_URL_REDIRECT="" -e ALLOWED_HOSTS="" -e PROHIBITED_SLUGS="api" -e PROHIBITED_CHARACTERS_IN_SLUGS="/" -e LOG_LEVEL="info" ghcr.io/thaddeuskkr/ nova:latest
+docker run --name nova --restart unless-stopped -p 80:3000 -e MONGODB_CONNECTION_URL="<YOUR_DATABASE_URL>" -e HOST="localhost" -e PORT="3000" -e BASE_URL="" -e BASE_URL_REDIRECT="" -e ALLOWED_HOSTS="" -e PROHIBITED_SLUGS="api" -e PROHIBITED_CHARACTERS_IN_SLUGS="/" -e LOG_LEVEL="info" -e NODE_ENV="production" ghcr.io/thaddeuskkr/ nova:latest
 ```
 
 ### Docker Compose
@@ -44,6 +44,7 @@ services:
       PROHIBITED_SLUGS: "api"
       PROHIBITED_CHARACTERS_IN_SLUGS: "/"
       LOG_LEVEL: "info"
+      NODE_ENV: "production"
 ```
 
 ## Setup: Development

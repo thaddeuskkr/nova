@@ -68,6 +68,7 @@ services:
 * [Git](https://git-scm.com/)
 * [Node.js](https://nodejs.org/) (tested with latest LTS)
 * [NPM](https://www.npmjs.com/) (bundled with Node.js)
+* [MongoDB](https://www.mongodb.com/) installed locally or an [Atlas](https://www.mongodb.com/products/platform/atlas-database) instance running
 
 ### Steps
 

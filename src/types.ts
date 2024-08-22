@@ -12,4 +12,5 @@ export type Config = {
     baseUrlRedirect: string;
     prohibitedSlugs: string[];
     prohibitedCharacters: string[];
+    baseDirectory: string;
 };

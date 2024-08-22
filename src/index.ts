@@ -74,6 +74,7 @@ for (const route of readFiles(path.join(__dirname, 'routes'))) {
                 baseUrlRedirect,
                 prohibitedSlugs,
                 prohibitedCharacters: [...prohibitedCharacters],
+                baseDirectory: __dirname,
             } as Config,
         });
         $.debug(`Registered ${route}`);

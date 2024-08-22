@@ -1,11 +1,11 @@
-import { Link, User } from '../models.js';
-import type { Route } from '../types.js';
-import { generatePassword } from '../utils.js';
+import { Link, User } from '../../models.js';
+import type { Route } from '../../types.js';
+import { generatePassword } from '../../utils.js';
 
 export const routes: Route = (fastify, { $, config }, done) => {
     fastify.route({
         method: ['POST'],
-        url: '/api/update',
+        url: '/api/links/update',
         handler: async (request, reply) => {
             if (typeof request.headers.authorization !== 'string') {
                 reply.code(400).send({ error: true, message: 'This route requires the Authorization header to be set to a user token' });

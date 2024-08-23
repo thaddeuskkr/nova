@@ -9,6 +9,10 @@ const linkSchema = new mongoose.Schema({
     user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
 });
 
+const connectionsSchema = new mongoose.Schema({
+    discord: { type: String, required: false, default: null },
+});
+
 const userSchema = new mongoose.Schema({
     username: { type: String, required: true },
     email: { type: String, required: true },
@@ -16,6 +20,7 @@ const userSchema = new mongoose.Schema({
     icon: { type: String, required: false, default: null },
     token: { type: String, required: false, default: null },
     admin: { type: Boolean, required: false, default: false },
+    connections: connectionsSchema,
 });
 
 const Link = mongoose.model('Link', linkSchema);

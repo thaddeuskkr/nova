@@ -12,7 +12,15 @@ export const routes: Route = (fastify, { $ }, done) => {
                 return;
             }
             const token = request.headers.authorization;
-            const body = request.body as { user?: string; username?: string; email?: string; password?: string; icon?: string; admin?: string } | undefined;
+            const body = request.body as {
+                user?: string;
+                username?: string;
+                email?: string;
+                password?: string;
+                icon?: string;
+                admin?: string;
+                discord?: string;
+            } | undefined;
             const user = await User.findOne({ token });
             if (!user) {
                 reply.code(401).send({ error: true, message: 'Invalid user token' });
@@ -42,6 +50,9 @@ export const routes: Route = (fastify, { $ }, done) => {
                     password: body.password ? bcrypt.hashSync(body.password, 10) : userToEdit.password,
                     icon: body.icon ? (body.icon === 'null' ? null : body.icon) : userToEdit.icon,
                     admin: body.admin ? body.admin === 'true' : userToEdit.admin,
+                    connections: {
+                        discord: body.discord || userToEdit.connections?.discord || null,
+                    },
                 }, { new: true });
                 if (!editedUser) {
                     reply.code(404).send({ error: true, message: 'User not found' });
@@ -59,6 +70,9 @@ export const routes: Route = (fastify, { $ }, done) => {
                     email: body.email || user.email,
                     password: body.password ? bcrypt.hashSync(body.password, 10) : user.password,
                     icon: body.icon ? (body.icon === 'null' ? null : body.icon) : user.icon,
+                    connections: {
+                        discord: body.discord || user.connections?.discord || null,
+                    },
                 });
                 reply.code(200).send({ error: false, message: 'Edited user successfully' });
                 $.debug(`${user.username} (${user.email}) edited`);

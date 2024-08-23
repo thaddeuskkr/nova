@@ -7,7 +7,13 @@ export const routes: Route = (fastify, { $ }, done) => {
         method: ['POST'],
         url: '/api/users/register',
         handler: async (request, reply) => {
-            const body = request.body as { username?: string; email?: string; password?: string; icon?: string };
+            const body = request.body as {
+                username?: string;
+                email?: string;
+                password?: string;
+                icon?: string;
+                discord?: string;
+            } | undefined;
             if (!body) {
                 reply.code(400).send({ error: true, message: 'Missing request body' });
                 return;
@@ -27,6 +33,9 @@ export const routes: Route = (fastify, { $ }, done) => {
                 icon: body.icon || null,
                 token: null,
                 admin: false,
+                connections: {
+                    discord: body.discord || null,
+                },
             });
             await user.save();
             reply.code(201).send({ error: false, message: 'Registration successful' });

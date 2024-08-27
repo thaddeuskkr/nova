@@ -1,5 +1,7 @@
 # Nova
 
+![Workflow Status](https://github.com/thaddeuskkr/nova/actions/workflows/build-tags.yml/badge.svg)
+
 Nova is a simple link shortener created in TypeScript that runs on Node.js.  
 ***Currently in development, and not ready for production use.***
 

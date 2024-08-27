@@ -17,6 +17,7 @@ Instead, report a vulnerability privately [here](https://github.com/thaddeuskkr/
 If the vulnerability you've discovered is *severe*, do also contact me using [this form](https://www.tkkr.dev/contact), and I will get back to you within 24 hours.
 
 ## What counts as a severe vulnerability?
+
 * Retrieval of any user information (of other users) such as passwords and emails
 * Database infiltration
 * Bypassing password-protected short URLs

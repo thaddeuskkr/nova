@@ -31,7 +31,7 @@
         "bcrypt": "^5.1.1",
         "dotenv": "^16.4.5",
         "fastify": "^4.28.1",
-        "mongoose": "^8.5.3",
+        "mongoose": "^8.5.4",
         "pino": "^9.3.2"
     },
     "devDependencies": {

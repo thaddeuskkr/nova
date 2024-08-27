@@ -1,4 +1,4 @@
-name: 'Build and push Docker image (main)'
+name: 'Build - Docker (main)'
 
 on:
     workflow_dispatch:

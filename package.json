@@ -39,7 +39,7 @@
         "@stylistic/eslint-plugin": "^2.6.4",
         "@types/bcrypt": "^5.0.2",
         "@types/node": "^22.5.0",
-        "eslint": "^9.9.0",
+        "eslint": "^9.9.1",
         "eslint-plugin-unicorn": "^55.0.0",
         "globals": "^15.9.0",
         "nodemon": "^3.1.4",

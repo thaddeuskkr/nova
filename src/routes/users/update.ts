@@ -35,11 +35,18 @@ export const routes: Route = (fastify, { $ }, done) => {
                     reply.code(401).send({ error: true, message: 'You do not have permission to edit other users' });
                     return;
                 }
-                if (await User.exists({ $or: [{ username: body.username }, { email: body.username }, { username: body.email }, { email: body.email }] })) {
+                if (await User.exists({
+                    $or: [
+                        { username: body.username?.toLowerCase() },
+                        { email: body.username?.toLowerCase() },
+                        { username: body.email?.toLowerCase() },
+                        { email: body.email?.toLowerCase() },
+                    ],
+                })) {
                     reply.code(400).send({ error: true, message: 'Username or email already in use' });
                     return;
                 }
-                const userToEdit = await User.findOne({ $or: [{ username: body.user }, { email: body.user }] });
+                const userToEdit = await User.findOne({ $or: [{ username: body.user.toLowerCase() }, { email: body.user.toLowerCase() }] });
                 if (!userToEdit) {
                     reply.code(404).send({ error: true, message: 'User not found' });
                     return;
@@ -61,7 +68,14 @@ export const routes: Route = (fastify, { $ }, done) => {
                 reply.code(200).send({ error: false, message: 'Edited user successfully' });
                 $.debug(`${editedUser.username} (${editedUser.email}) edited by ${user.username} (${user.email})`);
             } else {
-                if (await User.exists({ $or: [{ username: body.username }, { email: body.username }, { username: body.email }, { email: body.email }] })) {
+                if (await User.exists({
+                    $or: [
+                        { username: body.username?.toLowerCase() },
+                        { email: body.username?.toLowerCase() },
+                        { username: body.email?.toLowerCase() },
+                        { email: body.email?.toLowerCase() },
+                    ],
+                })) {
                     reply.code(400).send({ error: true, message: 'Username or email already in use' });
                     return;
                 }

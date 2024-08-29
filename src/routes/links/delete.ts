@@ -25,7 +25,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
-            const slugs = body.slugs.split(',').map((slug) => slug.trim()) || [];
+            const slugs = body.slugs.split(',').map((slug) => slug.trim().toLowerCase()) || [];
             const link = await Link.findOne({ slugs: { $in: slugs } });
             if (!link) {
                 reply.code(400).send({ error: true, message: 'Short URL does not exist' });

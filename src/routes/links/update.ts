@@ -26,7 +26,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
-            const slugs = body.slug.split(',').map((slug) => slug.trim()) || [];
+            const slugs = body.slug.split(',').map((slug) => slug.trim().toLowerCase()) || [];
             const link = await Link.findOne({ slugs: { $in: slugs } });
             if (!link) {
                 reply.code(400).send({ error: true, message: 'Short URL does not exist' });
@@ -36,7 +36,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 reply.code(401).send({ error: true, message: 'You do not have permission to edit this short URL' });
                 return;
             }
-            const updatedSlugs = body.slugs?.split(',').map((slug) => slug.trim()).filter((slug) => slug.length > 0);
+            const updatedSlugs = body.slugs?.split(',').map((slug) => slug.trim().toLowerCase()).filter((slug) => slug.length > 0);
             if (await Link.findOne({ slugs: { $in: updatedSlugs?.filter((s) => !link.slugs.includes(s)) } })) {
                 reply.code(400).send({ error: true, message: 'Shortened URL in use' });
                 return;

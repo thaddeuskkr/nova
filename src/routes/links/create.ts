@@ -30,7 +30,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
             const password = isPublic ? null : body.password || generatePassword(16, ['numbers', 'lowercase', 'uppercase']);
             const slugs = body.slugs
                 .split(',')
-                .map((slug) => slug.trim())
+                .map((slug) => slug.trim().toLowerCase())
                 .filter((slug) => slug.length > 0);
             const prohibitedSlugs = slugs.filter((slug) => config.prohibitedSlugs.includes(slug));
             const slugsWithProhibitedCharacters = slugs.filter((slug) => config.prohibitedCharacters.some((char) => slug.includes(char)));

@@ -6,7 +6,7 @@ export const routes: Route = (fastify, { config }, done) => {
         method: ['GET'],
         url: '*',
         handler: async (request, reply) => {
-            const link = await Link.findOne({ slugs: request.url.split('?')[0]?.replace(/\//, '') });
+            const link = await Link.findOne({ slugs: request.url.split('?')[0]?.replace(/\//, '').toLowerCase() });
             if (!link) {
                 reply.code(404).send('This short URL does not exist. ' +
                 'If you believe that this is an error, please contact the owner of the URL.' +

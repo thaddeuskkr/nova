@@ -45,8 +45,8 @@ export const routes: Route = (fastify, { $ }, done) => {
                     return;
                 }
                 const editedUser = await User.findByIdAndUpdate(userToEdit._id, {
-                    username: body.username || userToEdit.username,
-                    email: body.email || userToEdit.email,
+                    username: body.username?.toLowerCase() || userToEdit.username,
+                    email: body.email?.toLowerCase() || userToEdit.email,
                     password: body.password ? bcrypt.hashSync(body.password, 10) : userToEdit.password,
                     icon: body.icon ? (body.icon === 'null' ? null : body.icon) : userToEdit.icon,
                     admin: body.admin ? body.admin === 'true' : userToEdit.admin,
@@ -66,8 +66,8 @@ export const routes: Route = (fastify, { $ }, done) => {
                     return;
                 }
                 await User.findByIdAndUpdate(user._id, {
-                    username: body.username || user.username,
-                    email: body.email || user.email,
+                    username: body.username?.toLowerCase() || user.username,
+                    email: body.email?.toLowerCase() || user.email,
                     password: body.password ? bcrypt.hashSync(body.password, 10) : user.password,
                     icon: body.icon ? (body.icon === 'null' ? null : body.icon) : user.icon,
                     connections: {

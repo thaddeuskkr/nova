@@ -22,13 +22,20 @@ export const routes: Route = (fastify, { $ }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
-            if (await User.exists({ $or: [{ username: body.username }, { email: body.username }, { username: body.email }, { email: body.email }] })) {
+            if (await User.exists({
+                $or: [
+                    { username: body.username.toLowerCase() },
+                    { email: body.username.toLowerCase() },
+                    { username: body.email.toLowerCase() },
+                    { email: body.email.toLowerCase() },
+                ],
+            })) {
                 reply.code(400).send({ error: true, message: 'Username or email already in use' });
                 return;
             }
             const user = new User({
-                username: body.username,
-                email: body.email,
+                username: body.username.toLowerCase(),
+                email: body.email.toLowerCase(),
                 password: bcrypt.hashSync(body.password, 10),
                 icon: body.icon || null,
                 token: null,

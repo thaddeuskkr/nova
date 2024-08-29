@@ -17,7 +17,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
                 return;
             }
-            const user = await User.findOne({ $or: [{ username: body.username }, { email: body.username }] });
+            const user = await User.findOne({ $or: [{ username: body.username.toLowerCase() }, { email: body.username.toLowerCase() }] });
             if (!user) return reply.code(401).send({ error: true, message: 'User not found' });
             if (!bcrypt.compareSync(body.password, user.password)) return reply.code(401).send({ error: true, message: 'Password does not match' });
             user.token = user.token || crypto.randomBytes(128).toString('base64');

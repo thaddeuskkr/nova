@@ -26,7 +26,7 @@ export const routes: Route = (fastify, { $ }, done) => {
                     reply.code(401).send({ error: true, message: 'You do not have permission to delete other users' });
                     return;
                 }
-                const deletedUser = await User.findOneAndDelete({ $or: [{ username: body.user }, { email: body.user }] });
+                const deletedUser = await User.findOneAndDelete({ $or: [{ username: body.user.toLowerCase() }, { email: body.user.toLowerCase() }] });
                 if (!deletedUser) {
                     reply.code(404).send({ error: true, message: 'User not found' });
                     return;

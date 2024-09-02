@@ -13,4 +13,5 @@ export type ConfigObject = {
     prohibitedSlugs: string[];
     prohibitedCharacters: string[];
     baseDirectory: string;
+    registrationEnabled: boolean;
 };

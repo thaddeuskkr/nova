@@ -2,7 +2,7 @@ import bcrypt from 'bcrypt';
 import { User } from '../../models.js';
 import type { Route } from '../../types.js';
 
-export const routes: Route = (fastify, { $ }, done) => {
+export const routes: Route = (fastify, { $, config }, done) => {
     fastify.route({
         method: ['POST'],
         url: '/api/users/register',
@@ -20,6 +20,10 @@ export const routes: Route = (fastify, { $ }, done) => {
             }
             if (!body.username || !body.email || !body.password) {
                 reply.code(400).send({ error: true, message: 'Missing required fields' });
+                return;
+            }
+            if (!config.registrationEnabled) {
+                reply.code(403).send({ error: true, message: 'Registration is disabled on this instance' });
                 return;
             }
             if (await User.exists({

@@ -21,6 +21,7 @@ const baseUrlRedirect = process.env['BASE_URL_REDIRECT'] || '';
 const allowedHosts = process.env['ALLOWED_HOSTS']?.split(',').filter((element) => element.length > 0) || [];
 const prohibitedSlugs = process.env['PROHIBITED_SLUGS']?.split(',').filter((element) => element.length > 0) || ['api'];
 const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/';
+const registrationEnabled = process.env['REGISTRATION_ENABLED'] ? process.env['REGISTRATION_ENABLED'] == 'true' : true;
 
 const $ = pino({ level });
 const fastify = Fastify({ logger: false });
@@ -83,6 +84,7 @@ for (const route of readFiles(path.join(__dirname, 'routes'))) {
                 prohibitedSlugs,
                 prohibitedCharacters: [...prohibitedCharacters],
                 baseDirectory: __dirname,
+                registrationEnabled,
             } as ConfigObject,
         });
         $.debug(`Registered ${route}`);

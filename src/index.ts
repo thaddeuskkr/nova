@@ -7,7 +7,7 @@ import { createRequire } from 'node:module';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { pino } from 'pino';
-import type { Config } from './types.js';
+import type { ConfigObject } from './types.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -75,7 +75,7 @@ for (const route of readFiles(path.join(__dirname, 'routes'))) {
                 prohibitedSlugs,
                 prohibitedCharacters: [...prohibitedCharacters],
                 baseDirectory: __dirname,
-            } as Config,
+            } as ConfigObject,
         });
         $.debug(`Registered ${route}`);
     } catch (error) {

@@ -63,6 +63,14 @@ fastify.addHook('onRequest', (request, reply, done) => {
     done();
 });
 
+try {
+    await mongoose.connect(databaseUrl, {});
+    $.debug(`Connected to database at ${mongoose.connection.host}:${mongoose.connection.port}/${mongoose.connection.name}`);
+} catch (error) {
+    $.fatal(error);
+    process.exit(1);
+}
+
 for (const route of readFiles(path.join(__dirname, 'routes'))) {
     try {
         const imported = await import(route);
@@ -82,14 +90,6 @@ for (const route of readFiles(path.join(__dirname, 'routes'))) {
         $.warn(`Failed to register ${route}`);
         if (error instanceof Error && error.message) $.warn(error.message);
     }
-}
-
-try {
-    await mongoose.connect(databaseUrl, {});
-    $.debug(`Connected to database at ${mongoose.connection.host}:${mongoose.connection.port}/${mongoose.connection.name}`);
-} catch (error) {
-    $.fatal(error);
-    process.exit(1);
 }
 
 try {

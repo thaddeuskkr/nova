@@ -23,7 +23,14 @@ const userSchema = new mongoose.Schema({
     connections: connectionsSchema,
 });
 
+const config = new mongoose.Schema({
+    key: { type: String, required: true },
+    value: { type: String, required: true },
+});
+
 const Link = mongoose.model('Link', linkSchema);
 const User = mongoose.model('User', userSchema);
+const Config = mongoose.model('Config', config);
 
-export { Link, User };
+export { Config, Link, User };
+

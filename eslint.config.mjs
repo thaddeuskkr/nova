@@ -102,7 +102,7 @@ export default [
             '@stylistic/switch-colon-spacing': ['error', { after: true, before: false }],
             '@stylistic/template-curly-spacing': ['error', 'never'],
             '@stylistic/template-tag-spacing': ['error', 'never'],
-            '@stylistic/type-annotation-spacing': ['error', { before: false, after: true, overrides: { arrow: { before: true, after: true } } }],
+            '@stylistic/type-annotation-spacing': ['error', { before: true, after: true, overrides: { arrow: { before: true, after: true }, colon: { before: false, after: true } } }],
             '@stylistic/wrap-iife': ['error', 'inside'],
             '@stylistic/yield-star-spacing': ['error', { before: true, after: false }],
         },

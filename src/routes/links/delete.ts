@@ -17,7 +17,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 return;
             }
             if (!config.urlDeletionEnabled) {
-                reply.code(403).send({ error: true, message: 'Deletion of shortened URLs is disabled on this instance' });
+                reply.code(403).send({ error: true, message: 'Deletion of shortened URLs is disabled' });
                 return;
             }
             if (config.urlDeletionEnabled === 'admin' && user.admin === false) {

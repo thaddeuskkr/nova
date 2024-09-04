@@ -23,7 +23,7 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 return;
             }
             if (!config.registrationEnabled) {
-                reply.code(403).send({ error: true, message: 'Registration is disabled on this instance' });
+                reply.code(403).send({ error: true, message: 'Registration is disabled' });
                 return;
             }
             if (await User.exists({

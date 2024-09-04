@@ -1,7 +1,7 @@
 import { Link, User } from '../../models.js';
 import type { Route } from '../../types.js';
 
-export const routes: Route = (fastify, { $ }, done) => {
+export const routes: Route = (fastify, { $, config }, done) => {
     fastify.route({
         method: ['POST'],
         url: '/api/links/delete',
@@ -14,6 +14,10 @@ export const routes: Route = (fastify, { $ }, done) => {
             const user = await User.findOne({ token });
             if (!user) {
                 reply.code(401).send({ error: true, message: 'Invalid user token' });
+                return;
+            }
+            if (!config.urlDeletionEnabled) {
+                reply.code(403).send({ error: true, message: 'Deletion of shortened URLs is disabled on this instance' });
                 return;
             }
             const body = request.body as { slugs?: string } | undefined;

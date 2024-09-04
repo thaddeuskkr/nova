@@ -14,4 +14,5 @@ export type ConfigObject = {
     prohibitedCharacters: string[];
     baseDirectory: string;
     registrationEnabled: boolean;
+    urlDeletionEnabled: boolean;
 };

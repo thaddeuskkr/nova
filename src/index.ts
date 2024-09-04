@@ -22,6 +22,7 @@ const allowedHosts = process.env['ALLOWED_HOSTS']?.split(',').filter((element) =
 const prohibitedSlugs = process.env['PROHIBITED_SLUGS']?.split(',').filter((element) => element.length > 0) || ['api'];
 const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/';
 const registrationEnabled = process.env['REGISTRATION_ENABLED'] ? process.env['REGISTRATION_ENABLED'] == 'true' : true;
+const urlDeletionEnabled = process.env['URL_DELETION_ENABLED'] ? process.env['URL_DELETION_ENABLED'] == 'true' : true;
 
 const $ = pino({ level });
 const fastify = Fastify({ logger: false });
@@ -85,6 +86,7 @@ for (const route of readFiles(path.join(__dirname, 'routes'))) {
                 prohibitedCharacters: [...prohibitedCharacters],
                 baseDirectory: __dirname,
                 registrationEnabled,
+                urlDeletionEnabled,
             } as ConfigObject,
         });
         $.debug(`Registered ${route}`);

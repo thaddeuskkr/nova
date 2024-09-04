@@ -20,6 +20,10 @@ export const routes: Route = (fastify, { $, config }, done) => {
                 reply.code(403).send({ error: true, message: 'Deletion of shortened URLs is disabled on this instance' });
                 return;
             }
+            if (config.urlDeletionEnabled === 'admin' && user.admin === false) {
+                reply.code(403).send({ error: true, message: 'Deletion of shortened URLs is restricted to administrators' });
+                return;
+            }
             const body = request.body as { slugs?: string } | undefined;
             if (!body) {
                 reply.code(400).send({ error: true, message: 'Missing request body' });

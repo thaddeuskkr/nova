@@ -33,6 +33,8 @@ docker run \
   -e ALLOWED_HOSTS="" \
   -e PROHIBITED_SLUGS="api" \
   -e PROHIBITED_CHARACTERS_IN_SLUGS="/" \
+  -e REGISTRATION_ENABLED="true" \
+  -e URL_DELETION_ENABLED="true" \
   -e LOG_LEVEL="info" \
   -e NODE_ENV="production" \
   ghcr.io/thaddeuskkr/ nova:latest
@@ -59,6 +61,8 @@ services:
       ALLOWED_HOSTS: ""
       PROHIBITED_SLUGS: "api"
       PROHIBITED_CHARACTERS_IN_SLUGS: "/"
+      REGISTRATION_ENABLED: "true"
+      URL_DELETION_ENABLED: "true"
       LOG_LEVEL: "info"
       NODE_ENV: "production"
 ```

@@ -10,10 +10,10 @@ export const routes: Route = (fastify, { config }, done) => {
                 return;
             }
             reply.code(200).send(`${config.info.name} v${config.info.version} by ${config.info.author}` +
-            '\n' +
-            'https://github.com/thaddeuskkr/nova' +
-            '\n\n' +
-            `Your IP address is ${request.headers['x-forwarded-for'] || request.ip}`);
+                '\n' +
+                'https://github.com/thaddeuskkr/nova' +
+                '\n\n' +
+                `Your IP address is ${request.headers['x-forwarded-for'] || request.ip}`);
         },
     });
     done();

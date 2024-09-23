@@ -46,20 +46,20 @@ fastify.register(FastifyFormBody);
 fastify.addHook('onRequest', (request, reply, done) => {
     if (allowedHosts.length > 0 && !allowedHosts.includes(request.hostname)) {
         reply.code(403).send(`${request.hostname} is not in the list of allowed hosts.` +
-        '\n\n' +
-        `${name} v${version} by ${author}` +
-        '\n' +
-        'https://github.com/thaddeuskkr/nova');
+            '\n\n' +
+            `${name} v${version} by ${author}` +
+            '\n' +
+            'https://github.com/thaddeuskkr/nova');
         $.debug(`-> [${request.hostname}] Rejected ${request.method} ${request.url} from ${request.headers['x-forwarded-for'] || request.ip}`);
         return;
     }
     $.debug(`-> [${request.hostname}] ${request.method} ${request.url} from ${request.headers['x-forwarded-for'] || request.ip}`);
     if (ready == false) {
         reply.code(503).send('Server is not ready for requests.' +
-        '\n\n' +
-        `${name} v${version} by ${author}` +
-        '\n' +
-        'https://github.com/thaddeuskkr/nova');
+            '\n\n' +
+            `${name} v${version} by ${author}` +
+            '\n' +
+            'https://github.com/thaddeuskkr/nova');
         return;
     }
     done();

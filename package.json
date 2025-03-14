@@ -5,8 +5,8 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "tw:build": "bunx @tailwindcss/cli -i ./src/public/input.css -o ./src/public/output.css --minify",
-        "tw:watch": "bunx @tailwindcss/cli -i ./src/public/input.css -o ./src/public/output.css --minify --watch"
+        "build": "tailwindcss -i ./src/public/input.css -o ./src/public/output.css --minify",
+        "watch": "tailwindcss -i ./src/public/input.css -o ./src/public/output.css --minify --watch"
     },
     "dependencies": {
         "mongoose": "^8.12.1",

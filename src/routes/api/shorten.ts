@@ -168,7 +168,7 @@ export const route: Route = {
                     description: link.description,
                     slugs: link.slugs,
                     password: link.password ? password : null,
-                    shortened: link.slugs.map((slug) => `${url.origin}/${slug}${password ? `?p=${password}` : ''}`),
+                    shortened: link.slugs.map((slug) => `https://${url.host}/${slug}${password ? `?p=${password}` : ''}`),
                 },
             }),
             {

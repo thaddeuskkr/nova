@@ -25,4 +25,7 @@ export type Route = {
 export type Config = {
     apiAuth: string;
     randomSlugLength: number;
+    baseUrlRedirect: string;
+    prohibitedSlugs: string[];
+    prohibitedCharacters: string[];
 };

@@ -3,7 +3,11 @@ import type { Route } from '../types';
 
 export const route: Route = {
     url: '/',
-    async request({ request, version, url, ip, config }) {
+    async request({ $, request, version, url, ip, config }) {
+        if (config.baseUrlRedirect.length && config.baseUrlRedirect.toLowerCase() !== 'false') {
+            $.debug(`301 ${url.pathname} | ${ip}`);
+            return Response.redirect(config.baseUrlRedirect, 301);
+        }
         let body = _['index']
             .replace(/{{version}}/g, version)
             .replace(/{{url}}/g, url.pathname)

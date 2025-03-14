@@ -96,29 +96,54 @@ export const route: Route = {
             const randomSlug = await generateSlug(config.randomSlugLength);
             slugs.push(randomSlug);
         } else {
-            for (const userSlug of body.slugs) {
-                if (!userSlug.length) continue;
-                const existingSlug = await Link.findOne({ slugs: userSlug });
-                if (existingSlug) {
-                    $.debug(`400 ${url.pathname} | ${ip}`);
-                    return new Response(
-                        JSON.stringify({
-                            error: `Slug "${userSlug}" is already taken`,
-                        }),
-                        {
-                            status: 400,
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
+            body.slugs = body.slugs.map((slug) => slug.trim()).filter((slug) => slug.length > 0);
+            if (await Link.findOne({ slugs: { $in: body.slugs } })) {
+                $.debug(`400 ${url.pathname} | ${ip}`);
+                return new Response(
+                    JSON.stringify({
+                        error: 'One or more shortened URLs are already in use',
+                    }),
+                    {
+                        status: 400,
+                        headers: {
+                            'Content-Type': 'application/json',
                         },
-                    );
-                }
-                slugs.push(userSlug);
+                    },
+                );
             }
-            if (!slugs.length) {
-                const randomSlug = await generateSlug(config.randomSlugLength);
-                slugs.push(randomSlug);
+            const prohibitedSlugs = body.slugs.filter((slug) => config.prohibitedSlugs.includes(slug));
+            const slugsWithProhibitedCharacters = body.slugs.filter((slug) =>
+                config.prohibitedCharacters.some((char) => slug.includes(char)),
+            );
+            if (prohibitedSlugs.length) {
+                $.debug(`400 ${url.pathname} | ${ip}`);
+                return new Response(
+                    JSON.stringify({
+                        error: `The following slugs are prohibited: ${prohibitedSlugs.join(', ')}`,
+                    }),
+                    {
+                        status: 400,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    },
+                );
             }
+            if (slugsWithProhibitedCharacters.length) {
+                $.debug(`400 ${url.pathname} | ${ip}`);
+                return new Response(
+                    JSON.stringify({
+                        error: `The following slugs contain prohibited characters: ${slugsWithProhibitedCharacters.join(', ')}`,
+                    }),
+                    {
+                        status: 400,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    },
+                );
+            }
+            slugs.push(...body.slugs);
         }
         let password: string | null = null;
         if (body.password && body.password.length) {

@@ -50,7 +50,7 @@ jobs:
                       type=ref,event=branch,suffix=-arm64
                       type=ref,event=pr,suffix=-arm64
                       type=sha,format=short,prefix=,suffix=-arm64
-                      type=raw,format=latest,suffix=-arm64
+                      type=raw,value=latest,suffix=-arm64
 
             - name: 'Build and push'
               id: build-and-push

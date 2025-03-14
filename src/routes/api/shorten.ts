@@ -77,7 +77,7 @@ export const route: Route = {
                 },
             );
         }
-        if (!isValidHttpUrl(body.url)) {
+        if (!isValidUrl(body.url)) {
             $.debug(`400 ${url.pathname} | ${ip}`);
             return new Response(
                 JSON.stringify({
@@ -204,12 +204,11 @@ function generatePassword(length = 12): string {
     return password;
 }
 
-function isValidHttpUrl(string: string): boolean {
-    let url;
+function isValidUrl(string: string): boolean {
     try {
-        url = new URL(string);
+        new URL(string);
     } catch (_) {
         return false;
     }
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    return true;
 }

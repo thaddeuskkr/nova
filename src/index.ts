@@ -29,7 +29,7 @@ if (randomSlugLength < 4) {
     console.error('Environment variable RANDOM_SLUG_LENGTH must be a number greater than or equal to 4, exiting');
     process.exit(1);
 }
-if (baseUrlRedirect.length > 0 && !isValidHttpUrl(baseUrlRedirect) && baseUrlRedirect.toLowerCase() !== 'false') {
+if (baseUrlRedirect.length > 0 && !isValidUrl(baseUrlRedirect) && baseUrlRedirect.toLowerCase() !== 'false') {
     console.error('Environment variable BASE_URL_REDIRECT must be a valid URL, exiting');
     process.exit(1);
 }
@@ -113,12 +113,11 @@ async function getAllFiles(dirPath: string): Promise<string[]> {
     return files;
 }
 
-function isValidHttpUrl(string: string): boolean {
-    let url;
+function isValidUrl(string: string): boolean {
     try {
-        url = new URL(string);
+        new URL(string);
     } catch (_) {
         return false;
     }
-    return url.protocol === 'http:' || url.protocol === 'https:';
+    return true;
 }

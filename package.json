@@ -1,0 +1,24 @@
+{
+    "name": "nova",
+    "version": "1.0.0-alpha",
+    "module": "src/index.ts",
+    "type": "module",
+    "private": true,
+    "scripts": {
+        "tw:build": "bunx @tailwindcss/cli -i ./src/public/input.css -o ./src/public/output.css --minify",
+        "tw:watch": "bunx @tailwindcss/cli -i ./src/public/input.css -o ./src/public/output.css --minify --watch"
+    },
+    "dependencies": {
+        "mongoose": "^8.12.1",
+        "pino": "^9.6.0"
+    },
+    "devDependencies": {
+        "@tailwindcss/cli": "^4.0.14",
+        "@types/bun": "latest",
+        "prettier-plugin-tailwindcss": "^0.6.11",
+        "tailwindcss": "^4.0.14"
+    },
+    "peerDependencies": {
+        "typescript": "^5.8.2"
+    }
+}

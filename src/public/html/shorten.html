@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>nova • tkkr.dev • link shortener</title>
+        <link rel="stylesheet" href="/css" />
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                document.getElementById('another').addEventListener('click', () => {
+                    document.getElementById('shorten').classList.remove('hidden');
+                    document.getElementById('result').classList.remove('flex');
+                    document.getElementById('result').classList.add('hidden');
+                });
+                document.getElementById('shorten').addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const url = document.getElementById('url').value || '';
+                    const slugs = (document.getElementById('slugs').value || '').split(',').map((slug) => slug.trim());
+                    const password = document.getElementById('password').value || '';
+                    const response = await fetch('/api/shorten', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({ url, slugs, password }),
+                    });
+                    const data = await response.json();
+                    if (response.status === 200) {
+                        document.getElementById('url').value = '';
+                        document.getElementById('slugs').value = '';
+                        document.getElementById('password').value = '';
+                        document.getElementById('shorten').classList.add('hidden');
+                        document.getElementById('result').classList.remove('hidden');
+                        document.getElementById('result').classList.add('flex');
+                        const linksList = document.getElementById('links-list');
+                        linksList.innerHTML = '';
+                        data.link.shortened.forEach((link) => {
+                            const li = document.createElement('li');
+                            li.innerHTML = `<a href="${link}" class="underline transition-colors hover:text-gray-400">${link}</a>`;
+                            linksList.appendChild(li);
+                        });
+                    } else {
+                        if (data.error) alert(data.error);
+                        else alert('An unknown error occurred while shortening the URL.');
+                    }
+                });
+            });
+        </script>
+    </head>
+    <body class="m-0 flex h-screen w-screen bg-gray-950 p-0 text-gray-300">
+        <div class="m-auto w-full max-w-lg p-2 text-center">
+            <h1 class="mb-4 text-3xl font-bold"><a href="/" class="transition-colors hover:text-gray-400">Nova</a></h1>
+            <form id="shorten" class="flex w-full flex-col space-y-2 text-left">
+                <input
+                    type="url"
+                    name="url"
+                    id="url"
+                    class="w-full rounded-md bg-gray-900 px-2 py-1 text-center focus:placeholder-transparent focus:outline-none"
+                    placeholder="Enter a URL to shorten"
+                    required />
+                <input
+                    type="text"
+                    id="slugs"
+                    name="slugs"
+                    class="w-full rounded-md bg-gray-900 px-2 py-1 text-center focus:placeholder-transparent focus:outline-none"
+                    placeholder="Custom slugs, comma-separated (optional)" />
+                <input
+                    type="text"
+                    id="password"
+                    name="password"
+                    class="w-full rounded-md bg-gray-900 px-2 py-1 text-center focus:placeholder-transparent focus:outline-none"
+                    placeholder='Password (optional, accepts "random")' />
+                <button
+                    type="submit"
+                    class="w-full cursor-pointer rounded-md bg-gray-800 px-2 py-1 transition-colors hover:bg-gray-700 hover:text-gray-100">
+                    Shorten
+                </button>
+            </form>
+            <div class="hidden flex-col items-center justify-center space-y-2" id="result">
+                <h2 class="text-xl font-bold">Link shortened!</h2>
+                <p id="result-message">Here are your shortened URLs:</p>
+                <ul id="links-list"></ul>
+                <a
+                    id="another"
+                    class="mt-2 w-fit cursor-pointer rounded-md bg-purple-700 px-2 py-1 text-gray-300 transition-colors hover:bg-purple-800 hover:text-gray-400"
+                    >Shorten another URL</a
+                >
+            </div>
+            <p class="mt-4 text-sm text-gray-500">
+                <a href="https://github.com/thaddeuskkr/nova" class="transition-colors hover:text-gray-600">
+                    Nova by thaddeuskkr • v{{version}}</a
+                ><br />Your IP address is <code class="rounded-md bg-gray-900 px-1">{{ip}}</code>
+            </p>
+        </div>
+    </body>
+</html>

@@ -7,6 +7,8 @@
         <link rel="stylesheet" href="/css" />
         <script>
             document.addEventListener('DOMContentLoaded', () => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const password = urlParams.get('auth') || urlParams.get('password') || urlParams.get('pass') || urlParams.get('p') || '';
                 document.getElementById('another').addEventListener('click', () => {
                     document.getElementById('shorten').classList.remove('hidden');
                     document.getElementById('result').classList.remove('flex');
@@ -21,6 +23,7 @@
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
+                            Authorization: password,
                         },
                         body: JSON.stringify({ url, slugs, password }),
                     });

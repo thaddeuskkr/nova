@@ -1,6 +1,6 @@
 {
     "name": "nova",
-    "version": "1.0.0-alpha",
+    "version": "1.1.0-alpha",
     "module": "src/index.ts",
     "type": "module",
     "private": true,

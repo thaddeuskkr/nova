@@ -50,7 +50,7 @@ services:
         ports:
             - '80:3000'
         environment:
-            PORT: 8080 # The port to host Nova on,
+            PORT: 3000 # The port to host Nova on,
             NODE_ENV: production # The environment to run Nova in. Set to "production" for production environments.
             MONGODB_CONNECTION_URL: YOUR_CONNECTION_URL # The connection URL to your MongoDB database.
             LOG_LEVEL: info # The level of logging to use. Set to "debug" for more verbose logging.

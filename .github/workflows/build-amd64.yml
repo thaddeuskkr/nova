@@ -1,4 +1,4 @@
-name: 'Build - Docker (amd64)'
+name: 'Docker Build (amd64)'
 
 on:
     workflow_dispatch:

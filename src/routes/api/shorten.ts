@@ -221,10 +221,13 @@ export const route: Route = {
 
 async function generateSlug(length = 6): Promise<string> {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const bytes = randomBytes(length);
     let result = '';
-    for (let i = 0; i < length; i++) {
-        result += chars[bytes[i]! % chars.length];
+    while (result.length < length) {
+        const byte = randomBytes(1)[0];
+        if (byte >= 256 - (256 % chars.length)) {
+            continue;
+        }
+        result += chars[byte % chars.length];
     }
     const existingSlug = await Link.findOne({ slugs: result });
     if (existingSlug) return generateSlug(length);
@@ -234,10 +237,13 @@ async function generateSlug(length = 6): Promise<string> {
 
 function generatePassword(length = 12): string {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    const bytes = randomBytes(length);
     let password = '';
-    for (let i = 0; i < length; i++) {
-        password += chars[bytes[i]! % chars.length];
+    while (password.length < length) {
+        const byte = randomBytes(1)[0];
+        if (byte >= 256 - (256 % chars.length)) {
+            continue;
+        }
+        password += chars[byte % chars.length];
     }
     return password;
 }

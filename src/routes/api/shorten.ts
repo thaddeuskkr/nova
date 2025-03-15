@@ -224,10 +224,10 @@ async function generateSlug(length = 6): Promise<string> {
     let result = '';
     while (result.length < length) {
         const byte = randomBytes(1)[0];
-        if (byte >= 256 - (256 % chars.length)) {
+        if (byte! >= 256 - (256 % chars.length)) {
             continue;
         }
-        result += chars[byte % chars.length];
+        result += chars[byte! % chars.length];
     }
     const existingSlug = await Link.findOne({ slugs: result });
     if (existingSlug) return generateSlug(length);
@@ -240,10 +240,10 @@ function generatePassword(length = 12): string {
     let password = '';
     while (password.length < length) {
         const byte = randomBytes(1)[0];
-        if (byte >= 256 - (256 % chars.length)) {
+        if (byte! >= 256 - (256 % chars.length)) {
             continue;
         }
-        password += chars[byte % chars.length];
+        password += chars[byte! % chars.length];
     }
     return password;
 }

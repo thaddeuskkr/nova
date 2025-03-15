@@ -2,6 +2,10 @@
 @import url('https://fonts.googleapis.com/css2?family=Geist+Mono:wght@100..900&family=Geist:wght@100..900&display=swap');
 * {
     font-family: 'Geist', sans-serif;
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    font-optical-sizing: auto;
 }
 
 code,

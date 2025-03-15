@@ -11,4 +11,8 @@
 code,
 .code {
     font-family: 'Geist Mono', monospace;
+    font-style: normal;
+    font-weight: 100 900;
+    font-display: swap;
+    font-optical-sizing: auto;
 }

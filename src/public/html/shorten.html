@@ -19,29 +19,40 @@
                     const url = document.getElementById('url').value || '';
                     const slugs = (document.getElementById('slugs').value || '').split(',').map((slug) => slug.trim());
                     const password = document.getElementById('password').value || '';
+                    const expires = document.getElementById('expiry').value || '';
                     const response = await fetch('/api/shorten', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
                             Authorization: auth,
                         },
-                        body: JSON.stringify({ url, slugs, password }),
+                        body: JSON.stringify({ url, slugs, password, expires }),
                     });
                     const data = await response.json();
                     if (response.status === 200) {
+                        console.log(data);
                         document.getElementById('url').value = '';
                         document.getElementById('slugs').value = '';
                         document.getElementById('password').value = '';
+                        document.getElementById('expiry').value = '';
                         document.getElementById('shorten').classList.add('hidden');
                         document.getElementById('result').classList.remove('hidden');
                         document.getElementById('result').classList.add('flex');
                         const linksList = document.getElementById('links-list');
+                        const expiryEl = document.getElementById('expiry-message');
                         linksList.innerHTML = '';
                         data.link.shortened.forEach((link) => {
                             const li = document.createElement('li');
                             li.innerHTML = `<a href="${link}" class="underline transition-colors hover:text-gray-400">${link}</a>`;
                             linksList.appendChild(li);
                         });
+                        if (data.link.expiry) {
+                            expiryEl.classList.remove('hidden');
+                            expiryEl.innerHTML = `Expiry: <code class="rounded-md bg-gray-900 px-1">${new Date(data.link.expiry).toLocaleString()}</code>`;
+                        } else {
+                            expiryEl.classList.add('hidden');
+                            document.getElementById('expiry-message').innerHTML = '';
+                        }
                     } else {
                         if (data.error) alert(data.error);
                         else alert('An unknown error occurred while shortening the URL.');
@@ -69,6 +80,12 @@
                     placeholder="Custom slugs, comma-separated (optional)" />
                 <input
                     type="text"
+                    id="expiry"
+                    name="expiry"
+                    class="w-full rounded-md bg-gray-900 px-2 py-1 text-center focus:placeholder-transparent focus:outline-none"
+                    placeholder="Expires in (optional, e.g. 5m, 1h, 7d)" />
+                <input
+                    type="text"
                     id="password"
                     name="password"
                     class="w-full rounded-md bg-gray-900 px-2 py-1 text-center focus:placeholder-transparent focus:outline-none"
@@ -83,6 +100,7 @@
                 <h2 class="text-xl font-bold">Link shortened!</h2>
                 <p id="result-message">Here are your shortened URLs:</p>
                 <ul id="links-list"></ul>
+                <p id="expiry-message"></p>
                 <a
                     id="another"
                     class="mt-2 w-fit cursor-pointer rounded-md bg-purple-700 px-2 py-1 text-gray-300 transition-colors hover:bg-purple-800 hover:text-gray-400"

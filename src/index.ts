@@ -2,17 +2,24 @@ import { readdir } from 'fs/promises';
 import mongoose from 'mongoose';
 import { join } from 'path';
 import pino from 'pino';
+import { Link } from './models';
 import type { Config, Route } from './types';
 
 const databaseUrl = process.env['MONGODB_CONNECTION_URL'];
 const port = Number(process.env.PORT || 3000);
 const level = process.env.LOG_LEVEL || 'info';
 const development = process.env.DEVELOPMENT === 'true';
-const apiAuth = process.env.API_AUTH || '';
+const apiAuth =
+    process.env.API_AUTH?.split(',')
+        .map((key) => key.trim())
+        .filter((key) => key.length > 0 && key.toLowerCase() !== 'false') || [];
 const randomSlugLength = Number(process.env.RANDOM_SLUG_LENGTH || 6);
 const baseUrlRedirect = process.env.BASE_URL_REDIRECT || '';
-const prohibitedSlugs = process.env.PROHIBITED_SLUGS?.split(',').filter((element) => element.length > 0) || ['api'];
+const prohibitedSlugs = process.env.PROHIBITED_SLUGS?.split(',')
+    .map((slug) => slug.trim())
+    .filter((slug) => slug.length > 0) || ['api'];
 const prohibitedCharacters = process.env['PROHIBITED_CHARACTERS_IN_SLUGS'] || '/';
+const expiredLinkScanInterval = Number(process.env.EXPIRED_LINK_SCAN_INTERVAL || 15) * 1000;
 if (!databaseUrl) {
     console.error('Environment variable MONGODB_CONNECTION_URL not set, exiting');
     process.exit(1);
@@ -39,6 +46,8 @@ const $ = pino({ level });
 const packageJson = await Bun.file(join(import.meta.dir, '..', 'package.json')).json();
 const version = packageJson.version;
 
+$.info(`Starting Nova v${version}`);
+
 const config: Config = {
     apiAuth,
     randomSlugLength,
@@ -63,6 +72,8 @@ for (const file of files) {
 export const _ = {
     css: await Bun.file(join(import.meta.dir, 'public', 'output.css')).text(),
     favicon: await Bun.file(join(import.meta.dir, 'public', 'favicon.ico')).arrayBuffer(),
+    font: await Bun.file(join(import.meta.dir, 'public', 'fonts', 'Geist-VariableFont_wght.ttf')).arrayBuffer(),
+    font_mono: await Bun.file(join(import.meta.dir, 'public', 'fonts', 'GeistMono-VariableFont_wght.ttf')).arrayBuffer(),
     index: await Bun.file(join(import.meta.dir, 'public', 'html', 'index.html')).text(),
     shorten: await Bun.file(join(import.meta.dir, 'public', 'html', 'shorten.html')).text(),
     401: await Bun.file(join(import.meta.dir, 'public', 'html', '401.html')).text(),
@@ -74,11 +85,14 @@ try {
         dbName: 'nova',
     });
     $.debug(`Connected to database at ${mongoose.connection.host}:${mongoose.connection.port}/${mongoose.connection.name}`);
+    scanForExpiredLinks();
 } catch (error) {
     $.fatal('Failed to connect to database');
     $.fatal(error);
     process.exit(1);
 }
+
+setInterval(scanForExpiredLinks, expiredLinkScanInterval);
 
 Bun.serve({
     port,
@@ -120,4 +134,16 @@ function isValidUrl(string: string): boolean {
         return false;
     }
     return true;
+}
+
+function scanForExpiredLinks(): void {
+    const now = new Date();
+    Link.deleteMany({ expiry: { $lt: now } })
+        .then((result) => {
+            if (result.deletedCount > 0) $.debug(`Deleted ${result.deletedCount} expired links`);
+        })
+        .catch((error) => {
+            $.error('An error occurred while deleting expired links');
+            $.error(error);
+        });
 }

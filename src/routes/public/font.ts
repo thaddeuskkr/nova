@@ -2,13 +2,12 @@ import { _ } from '../../index';
 import type { Route } from '../../types';
 
 export const route: Route = {
-    url: '/favicon.ico',
+    url: '/fonts/Geist-VariableFont_wght.ttf',
     async request() {
-        const body = _['favicon'];
+        const body = _['font'];
         return new Response(body, {
-            status: 200,
             headers: {
-                'Content-Type': 'image/x-icon',
+                'Content-Type': 'font/ttf',
             },
         });
     },

@@ -1,4 +1,5 @@
 import { randomBytes } from 'crypto';
+import parse from 'parse-duration';
 import { Link } from '../../models';
 import type { Route } from '../../types';
 
@@ -19,9 +20,9 @@ export const route: Route = {
                 },
             );
         }
-        if (config.apiAuth && config.apiAuth.length && config.apiAuth.toLowerCase() !== 'false') {
+        if (config.apiAuth.length) {
             const auth = request.headers.get('Authorization');
-            if (!auth || auth !== config.apiAuth) {
+            if (!auth || !config.apiAuth.includes(auth)) {
                 $.debug(`401 ${url.pathname} | ${ip}`);
                 return new Response(
                     JSON.stringify({
@@ -41,6 +42,7 @@ export const route: Route = {
             slugs?: string[];
             description?: string;
             password?: string;
+            expires?: string;
         };
         try {
             body = (await request.json()) as {
@@ -48,6 +50,7 @@ export const route: Route = {
                 slugs?: string[];
                 description?: string;
                 password?: string;
+                expires?: string;
             };
         } catch (error) {
             $.debug(`400 ${url.pathname} | ${ip}`);
@@ -92,11 +95,11 @@ export const route: Route = {
             );
         }
         const slugs: string[] = [];
-        if (!body.slugs || !body.slugs.length) {
+        body.slugs = body.slugs?.map((slug) => slug.trim()).filter((slug) => slug.length > 0);
+        if (!body.slugs?.length) {
             const randomSlug = await generateSlug(config.randomSlugLength);
             slugs.push(randomSlug);
         } else {
-            body.slugs = body.slugs.map((slug) => slug.trim()).filter((slug) => slug.length > 0);
             if (await Link.findOne({ slugs: { $in: body.slugs } })) {
                 $.debug(`400 ${url.pathname} | ${ip}`);
                 return new Response(
@@ -145,6 +148,39 @@ export const route: Route = {
             }
             slugs.push(...body.slugs);
         }
+        const expires = parse(body.expires);
+        let expiry: Date | null = null;
+        if (body.expires?.length) {
+            if (expires === null) {
+                $.debug(`400 ${url.pathname} | ${ip}`);
+                return new Response(
+                    JSON.stringify({
+                        error: 'Invalid validity period. Please provide a valid duration string (e.g. 1m, 1h, 1d, 1w, 1y)',
+                    }),
+                    {
+                        status: 400,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    },
+                );
+            } else if (expires < 1000) {
+                $.debug(`400 ${url.pathname} | ${ip}`);
+                return new Response(
+                    JSON.stringify({
+                        error: 'Validity period must be at least 1 second',
+                    }),
+                    {
+                        status: 400,
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                    },
+                );
+            } else {
+                expiry = new Date(Date.now() + expires);
+            }
+        }
         let password: string | null = null;
         if (body.password && body.password.length) {
             if (body.password.toLowerCase() === 'random') {
@@ -158,6 +194,7 @@ export const route: Route = {
             slugs,
             description: body.description || null,
             password: password ? await Bun.password.hash(password) : null,
+            expiry,
         });
         return new Response(
             JSON.stringify({
@@ -168,7 +205,8 @@ export const route: Route = {
                     description: link.description,
                     slugs: link.slugs,
                     password: link.password ? password : null,
-                    shortened: link.slugs.map((slug) => `https://${url.host}/${slug}${password ? `?p=${password}` : ''}`),
+                    expiry: link.expiry,
+                    shortened: link.slugs.map((slug) => `https://${url.host}/${slug}${password ? `?${password}` : ''}`),
                 },
             }),
             {

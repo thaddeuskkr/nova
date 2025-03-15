@@ -34,6 +34,7 @@ docker run \
   -e BASE_URL_REDIRECT="false" \
   -e PROHIBITED_SLUGS="api" \
   -e PROHIBITED_CHARACTERS_IN_SLUGS="/" \
+  -e EXPIRED_LINK_SCAN_INTERVAL="15" \
   ghcr.io/thaddeuskkr/nova:latest
 ```
 
@@ -59,6 +60,7 @@ services:
             BASE_URL_REDIRECT: false # The URL to redirect to when the base URL (/) is visited. Can be left empty or set to false to disable.
             PROHIBITED_SLUGS: api # A comma-separated list of slugs that are prohibited from being used.
             PROHIBITED_CHARACTERS_IN_SLUGS: / # A non-separated list of characters that are prohibited from being used in slugs.
+            EXPIRED_LINK_SCAN_INTERVAL: 15 # The interval, in seconds, to scan for expired links.
 ```
 
 ## Setup: Development

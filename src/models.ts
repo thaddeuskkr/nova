@@ -6,6 +6,7 @@ const linkSchema = new mongoose.Schema({
     description: { type: String, required: false },
     password: { type: String, required: false, default: null },
     createdAt: { type: Date, required: true, default: Date.now },
+    expiry: { type: Date, required: false, default: null },
     clicks: { type: Number, required: false, default: 0 },
 });
 

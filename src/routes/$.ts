@@ -4,7 +4,7 @@ import type { Route } from '../types';
 
 export const route: Route = {
     url: '$',
-    async request({ $, request, version, url, ip }) {
+    async request({ $, version, url, ip }) {
         const link = await Link.findOne({ slugs: url.pathname.slice(1) });
         if (!link) {
             $.debug(`404 ${url.pathname} | ${ip}`);
@@ -22,10 +22,23 @@ export const route: Route = {
             );
         }
         if (link.password) {
-            const verified = await Bun.password.verify(
-                url.searchParams.get('password') || url.searchParams.get('pass') || url.searchParams.get('p') || '',
-                link.password,
-            );
+            const [userPassword] = url.searchParams.keys();
+            if (!userPassword) {
+                $.debug(`401 ${url.pathname} | ${ip}`);
+                return new Response(
+                    _[401]
+                        .replace(/{{version}}/g, version)
+                        .replace(/{{url}}/g, url.pathname)
+                        .replace(/{{ip}}/g, ip),
+                    {
+                        status: 401,
+                        headers: {
+                            'Content-Type': 'text/html',
+                        },
+                    },
+                );
+            }
+            const verified = await Bun.password.verify(userPassword, link.password);
             if (!verified) {
                 $.debug(`401 ${url.pathname} | ${ip}`);
                 return new Response(
@@ -44,7 +57,7 @@ export const route: Route = {
         }
         link.clicks ? link.clicks++ : (link.clicks = 1);
         await link.save();
-        $.debug(`301 ${url.pathname} | ${ip}`);
-        return Response.redirect(link.url, 301);
+        $.debug(`307 ${url.pathname} | ${ip}`);
+        return Response.redirect(link.url, 307);
     },
 };

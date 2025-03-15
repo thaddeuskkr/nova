@@ -23,7 +23,7 @@ export type Route = {
 };
 
 export type Config = {
-    apiAuth: string;
+    apiAuth: string[];
     randomSlugLength: number;
     baseUrlRedirect: string;
     prohibitedSlugs: string[];

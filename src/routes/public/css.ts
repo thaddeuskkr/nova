@@ -1,5 +1,5 @@
-import { _ } from '../index';
-import type { Route } from '../types';
+import { _ } from '../../index';
+import type { Route } from '../../types';
 
 export const route: Route = {
     url: '/css',

@@ -1,6 +1,6 @@
 # Nova
 
-![Workflow Status (release)](https://github.com/thaddeuskkr/nova/actions/workflows/build-tags.yml/badge.svg) ![Workflow Status (push)](https://github.com/thaddeuskkr/nova/actions/workflows/build-main.yml/badge.svg)
+![Workflow Status (amd64)](https://github.com/thaddeuskkr/nova/actions/workflows/build-amd64.yml/badge.svg) ![Workflow Status (arm64)](https://github.com/thaddeuskkr/nova/actions/workflows/build-arm64.yml/badge.svg)
 
 Nova is a simple link shortener built using TypeScript and Bun.
 

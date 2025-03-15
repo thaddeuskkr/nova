@@ -8,7 +8,7 @@
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const urlParams = new URLSearchParams(window.location.search);
-                const auth = urlParams.get('auth') || urlParams.get('password') || urlParams.get('pass') || urlParams.get('p') || '';
+                const [auth] = urlParams.keys();
                 document.getElementById('another').addEventListener('click', () => {
                     document.getElementById('shorten').classList.remove('hidden');
                     document.getElementById('result').classList.remove('flex');

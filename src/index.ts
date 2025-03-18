@@ -69,15 +69,11 @@ for (const file of files) {
     }
 }
 
-export const _ = {
-    css: await Bun.file(join(import.meta.dir, 'public', 'output.css')).text(),
-    favicon: await Bun.file(join(import.meta.dir, 'public', 'favicon.ico')).arrayBuffer(),
-    font: await Bun.file(join(import.meta.dir, 'public', 'fonts', 'Geist-VariableFont_wght.ttf')).arrayBuffer(),
-    font_mono: await Bun.file(join(import.meta.dir, 'public', 'fonts', 'GeistMono-VariableFont_wght.ttf')).arrayBuffer(),
-    index: await Bun.file(join(import.meta.dir, 'public', 'html', 'index.html')).text(),
-    shorten: await Bun.file(join(import.meta.dir, 'public', 'html', 'shorten.html')).text(),
-    401: await Bun.file(join(import.meta.dir, 'public', 'html', '401.html')).text(),
-    404: await Bun.file(join(import.meta.dir, 'public', 'html', '404.html')).text(),
+export const templates = {
+    index: await Bun.file(join(import.meta.dir, 'templates', 'index.html')).text(),
+    shorten: await Bun.file(join(import.meta.dir, 'templates', 'shorten.html')).text(),
+    401: await Bun.file(join(import.meta.dir, 'templates', '401.html')).text(),
+    404: await Bun.file(join(import.meta.dir, 'templates', '404.html')).text(),
 };
 
 try {
@@ -99,8 +95,9 @@ Bun.serve({
     development,
     fetch: async (request, server) => {
         const url = new URL(request.url);
-        const route = routes.get(url.pathname);
         const ip = toIPv4(request.headers.get('x-forwarded-for') || server.requestIP(request)?.address || 'unknown');
+        if (/\/public\//.test(url.pathname)) return routes.get('public')!.request({ $, server, request, url, version, ip, config });
+        const route = routes.get(url.pathname);
         $.debug(`${request.method} ${url.pathname} | ${ip}`);
         return route ?
                 route.request({ $, server, request, url, version, ip, config })

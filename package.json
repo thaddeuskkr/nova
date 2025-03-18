@@ -5,8 +5,8 @@
     "type": "module",
     "private": true,
     "scripts": {
-        "build": "tailwindcss -i ./src/public/input.css -o ./src/public/output.css --minify",
-        "watch": "tailwindcss -i ./src/public/input.css -o ./src/public/output.css --minify --watch",
+        "build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
+        "watch": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
         "start": "bun src/index.ts"
     },
     "dependencies": {

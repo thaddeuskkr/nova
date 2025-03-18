@@ -4,7 +4,9 @@
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>nova • tkkr.dev • link shortener</title>
-        <link rel="stylesheet" href="/css" />
+        <link rel="stylesheet" href="/public/css/build.css" />
+        <link rel="icon" href="/public/icons/favicon.ico" />
+        <link rel="apple-touch-icon" href="/public/icons/apple-touch-icon.png" />
         <script>
             document.addEventListener('DOMContentLoaded', () => {
                 const urlParams = new URLSearchParams(window.location.search);
@@ -30,7 +32,6 @@
                     });
                     const data = await response.json();
                     if (response.status === 200) {
-                        console.log(data);
                         document.getElementById('url').value = '';
                         document.getElementById('slugs').value = '';
                         document.getElementById('password').value = '';

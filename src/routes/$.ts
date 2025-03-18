@@ -1,4 +1,4 @@
-import { _ } from '../index';
+import { templates } from '../index';
 import { Link } from '../models';
 import type { Route } from '../types';
 
@@ -9,7 +9,7 @@ export const route: Route = {
         if (!link) {
             $.debug(`404 ${url.pathname} | ${ip}`);
             return new Response(
-                _[404]
+                templates[404]
                     .replace(/{{version}}/g, version)
                     .replace(/{{url}}/g, url.pathname)
                     .replace(/{{ip}}/g, ip),
@@ -26,7 +26,7 @@ export const route: Route = {
             if (!userPassword) {
                 $.debug(`401 ${url.pathname} | ${ip}`);
                 return new Response(
-                    _[401]
+                    templates[401]
                         .replace(/{{version}}/g, version)
                         .replace(/{{url}}/g, url.pathname)
                         .replace(/{{ip}}/g, ip),
@@ -42,7 +42,7 @@ export const route: Route = {
             if (!verified) {
                 $.debug(`401 ${url.pathname} | ${ip}`);
                 return new Response(
-                    _[401]
+                    templates[401]
                         .replace(/{{version}}/g, version)
                         .replace(/{{url}}/g, url.pathname)
                         .replace(/{{ip}}/g, ip),

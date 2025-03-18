@@ -2,7 +2,7 @@
 node_modules
 
 # output
-output.css
+build.css
 out
 dist
 *.tgz

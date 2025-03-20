@@ -3,6 +3,7 @@ import { Elysia, t } from 'elysia';
 import parse from 'parse-duration';
 import { Link } from '../../models';
 import type { Route } from '../../types';
+import { isValidUrl } from '../../utils';
 
 export const url: string = '/api/shorten';
 export const route: Route = ({ config }) =>
@@ -12,6 +13,10 @@ export const route: Route = ({ config }) =>
             if (config.apiAuth.length && (!authorization || !config.apiAuth.includes(authorization))) {
                 set.status = 401;
                 return { error: 'Unauthorized' };
+            }
+            if (!isValidUrl(body.url)) {
+                set.status = 400;
+                return { error: 'Invalid URL' };
             }
             if (!body.slugs?.length) {
                 body.slugs = [await generateSlug(config.randomSlugLength)];
@@ -69,9 +74,7 @@ export const route: Route = ({ config }) =>
                 authorization: t.Optional(t.String()),
             }),
             body: t.Object({
-                url: t.String({
-                    format: 'uri',
-                }),
+                url: t.String(),
                 slugs: t.Optional(
                     t.Union([
                         t.Array(

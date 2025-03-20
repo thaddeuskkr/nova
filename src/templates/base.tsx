@@ -17,7 +17,11 @@ export const Base = ({ title, children, version, ip }: { title: string; children
                 <div class='m-auto w-full max-w-lg p-2 text-center'>
                     {children}
                     <p class='mt-4 text-sm text-gray-500'>
-                        <a href='https://github.com/thaddeuskkr/nova' class='transition-colors hover:text-gray-600'>
+                        <a
+                            href='https://github.com/thaddeuskkr/nova'
+                            target='_blank'
+                            rel='noreferrer noopener'
+                            class='transition-colors hover:text-gray-600'>
                             Nova by thaddeuskkr • {version}
                         </a>
                         <br />

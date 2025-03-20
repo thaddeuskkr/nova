@@ -49,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } else {
             if (data.errors?.length) alert(data.errors.join('\n'));
+            else if (data.error) alert(data.error);
             else {
                 alert('An unexpected error occurred. Check the console for details.');
                 console.error(data);

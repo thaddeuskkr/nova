@@ -1,12 +1,11 @@
 import { html } from '@elysiajs/html';
 import { staticPlugin } from '@elysiajs/static';
 import { Elysia } from 'elysia';
-import { readdir } from 'fs/promises';
 import mongoose from 'mongoose';
 import { join } from 'path';
 import pino from 'pino';
 import { Link } from './models';
-import type { Config, Route } from './types';
+import type { Config } from './types';
 import { getIP, isValidUrl } from './utils';
 
 const databaseUrl = process.env.MONGODB_CONNECTION_URL;
@@ -75,38 +74,17 @@ const app = new Elysia()
     .onRequest(({ request, server }) => {
         $.debug(`${request.method} ${new URL(request.url).pathname} | ${getIP(request, server)}`);
     })
-    .use(staticPlugin({ assets: join(import.meta.dir, 'public') }))
+    .use(staticPlugin({ assets: join(import.meta.dir, '..', 'public') }))
     .use(html({ autoDetect: false, autoDoctype: false }));
 
-const files = await getAllFiles(join(import.meta.dir, 'routes'));
-for (const file of files) {
-    const { url, route } = (await import(file)) as { route: Route; url: string };
-    try {
-        app.use(route({ $, version, config }));
-        $.debug(`Successfully loaded: ${url}`);
-    } catch (error) {
-        $.warn(`Failed to load: ${file}`);
-        $.debug(error);
-    }
-}
+import * as routes from './routes';
+app.use(routes.main({ $, version, config }));
+app.use(routes.slugs({ $, version, config }));
+app.use(routes.api.shorten({ $, version, config }));
 
 app.listen(port);
 
 $.info(`Server started on port ${port}`);
-
-async function getAllFiles(dirPath: string): Promise<string[]> {
-    const dirents = await readdir(dirPath, { withFileTypes: true });
-    const files: string[] = [];
-    for (const dirent of dirents) {
-        const fullPath = join(dirPath, dirent.name);
-        if (dirent.isDirectory()) {
-            files.push(...(await getAllFiles(fullPath)));
-        } else if (dirent.isFile() && /\.(t|j)sx?$/.test(fullPath)) {
-            files.push(fullPath);
-        }
-    }
-    return files;
-}
 
 function scanForExpiredLinks(): void {
     const now = new Date();

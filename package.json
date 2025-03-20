@@ -1,17 +1,17 @@
 {
     "name": "nova",
-    "version": "2.1.1",
+    "version": "2.2.0",
     "module": "src/index.ts",
     "type": "module",
     "private": true,
     "scripts": {
-        "dev": "bun --watch ./src/index.ts | pino-pretty & tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
-        "build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
-        "start": "NODE_ENV=production bun ./src/index.ts",
-        "tw:watch": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
-        "tw:build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
-        "bun:dev": "bun --watch ./src/index.ts | pino-pretty",
-        "bun:build": "bun build ./src/index.ts --target bun --outdir ./dist"
+        "dev": "bun --watch src/index.ts | pino-pretty & tailwindcss -i public/css/input.css -o public/css/build.css --minify --watch",
+        "build": "bun build src/index.ts --target bun --outdir dist && tailwindcss -i public/css/input.css -o public/css/build.css --minify",
+        "start": "NODE_ENV=production bun ./dist/index.js",
+        "tw:watch": "tailwindcss -i public/css/input.css -o public/css/build.css --minify --watch",
+        "tw:build": "tailwindcss -i public/css/input.css -o public/css/build.css --minify",
+        "bun:dev": "bun --watch src/index.ts | pino-pretty",
+        "bun:build": "bun build src/index.ts --target bun --outdir dist"
     },
     "dependencies": {
         "@elysiajs/html": "^1.2.0",

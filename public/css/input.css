@@ -1,4 +1,4 @@
-@import 'tailwindcss' source('../../../src/');
+@import 'tailwindcss' source('../../src/');
 
 @font-face {
     font-family: 'Geist';

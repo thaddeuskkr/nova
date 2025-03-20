@@ -1,6 +1,6 @@
 {
+    "include": ["src/**/*"],
     "compilerOptions": {
-        "rootDir": "./src",
         // Environment setup & latest features
         "lib": ["esnext"],
         "target": "ESNext",

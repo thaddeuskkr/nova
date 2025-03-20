@@ -6,7 +6,7 @@ Nova is a simple link shortener built using TypeScript and Bun.
 
 ## Features
 
-- A working web interface
+- A working minimalistic web interface
 - An API that is easy to understand and use
 - Password-protected short URLs
 - Customisable short URLs

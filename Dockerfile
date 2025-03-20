@@ -22,4 +22,4 @@ COPY --from=prerelease /nova/src src
 COPY --from=prerelease /nova/package.json .
 
 USER bun
-ENTRYPOINT [ "bun", "run", "." ]
+ENTRYPOINT [ "bun", "start" ]

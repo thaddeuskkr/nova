@@ -88,9 +88,10 @@ export const route: Route = ({ config }) =>
                 password: t.Optional(t.Union([t.String(), t.Null()])),
                 expires: t.Optional(t.Union([t.String(), t.Null()])),
             }),
-            error: ({ error, code }) => {
+            error: ({ set, code, error }) => {
                 if (code !== 'VALIDATION') throw error;
-                return { error: error.message };
+                set.status = 400;
+                return { errors: [...error.validator.Errors(error.value)].map((e) => e.message) };
             },
         },
     );

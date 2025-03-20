@@ -6,16 +6,17 @@ import { getIP } from '../utils';
 
 export const url: string = '/';
 export const route: Route = ({ $, version, config }) =>
-    new Elysia().get(url, ({ server, request, redirect, query }) => {
+    new Elysia().get(url, ({ server, request, redirect, query, set }) => {
         const ip = getIP(request, server);
         if (config.baseUrlRedirect.length && config.baseUrlRedirect.toLowerCase() !== 'false') {
             $.debug(`307 ${url} | ${ip}`);
             return redirect(config.baseUrlRedirect, 307);
         }
         const apiAuth = Object.keys(query)[0];
-        if (!config.apiAuth.length || (apiAuth && config.apiAuth.includes(apiAuth)))
+        set.headers['content-type'] = 'text/html';
+        if (!config.apiAuth.length || (apiAuth && config.apiAuth.includes(apiAuth))) {
             return (
-                <Base title='Nova • Link Shortener' version={version} ip={ip}>
+                <Base title='Nova' version={version} ip={ip}>
                     <script src='/public/js/shorten.js' type='text/javascript'></script>
                     <form id='shorten' class='flex w-full flex-col space-y-2 text-left'>
                         <input
@@ -66,8 +67,9 @@ export const route: Route = ({ $, version, config }) =>
                     </div>
                 </Base>
             );
+        }
         return (
-            <Base title='Nova • tkkr.dev' version={version} ip={ip}>
+            <Base title='Nova' version={version} ip={ip}>
                 <h1 class='mb-4 text-3xl font-bold text-gray-300'>
                     <a href='/' class='transition-colors hover:text-gray-400'>
                         Nova

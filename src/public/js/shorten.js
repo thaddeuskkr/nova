@@ -48,8 +48,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.getElementById('expiry-message').innerHTML = '';
             }
         } else {
-            if (data.error) alert(data.error);
-            else alert('An unknown error occurred while shortening the URL.');
+            if (data.errors?.length) alert(data.errors.join('\n'));
+            else {
+                alert('An unexpected error occurred. Check the console for details.');
+                console.error(data);
+            }
         }
     });
 });

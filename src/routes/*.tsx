@@ -12,6 +12,7 @@ export const route: Route = ({ version }) =>
         const link = await Link.findOne({ slugs: path.slice(1) });
         if (!link) {
             set.status = 404;
+            set.headers['content-type'] = 'text/html';
             return (
                 <Base title='Nova • 404' version={version} ip={ip}>
                     <h1 class='mb-4 text-3xl font-bold'>
@@ -32,6 +33,7 @@ export const route: Route = ({ version }) =>
             const userPassword = Object.keys(query)[0];
             if (!userPassword) {
                 set.status = 401;
+                set.headers['content-type'] = 'text/html';
                 return (
                     <Base title='Nova • 401' version={version} ip={ip}>
                         <h1 class='mb-4 text-3xl font-bold text-gray-300'>
@@ -50,6 +52,7 @@ export const route: Route = ({ version }) =>
             const verified = await Bun.password.verify(userPassword, link.password);
             if (!verified) {
                 set.status = 401;
+                set.headers['content-type'] = 'text/html';
                 return (
                     <Base title='Nova • 401' version={version} ip={ip}>
                         <h1 class='mb-4 text-3xl font-bold text-gray-300'>

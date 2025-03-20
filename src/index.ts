@@ -76,7 +76,7 @@ const app = new Elysia()
         $.debug(`${request.method} ${new URL(request.url).pathname} | ${getIP(request, server)}`);
     })
     .use(staticPlugin({ assets: join(import.meta.dir, 'public') }))
-    .use(html());
+    .use(html({ autoDetect: false, autoDoctype: false }));
 
 const files = await getAllFiles(join(import.meta.dir, 'routes'));
 for (const file of files) {

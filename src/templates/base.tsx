@@ -4,7 +4,7 @@ import type { Children } from '@kitajs/html';
 export const Base = ({ title, children, version, ip }: { title: string; children: Children; version: string; ip: string }) =>
     '<!DOCTYPE html>' +
     (
-        <html>
+        <html lang='en'>
             <head>
                 <meta charset='UTF-8' />
                 <meta name='viewport' content='width=device-width, initial-scale=1.0' />

@@ -37,7 +37,12 @@ document.addEventListener('DOMContentLoaded', () => {
             linksList.innerHTML = '';
             data.link.shortened.forEach((link) => {
                 const li = document.createElement('li');
-                li.innerHTML = `<a href="${link}" class="underline transition-colors hover:text-gray-400">${link}</a>`;
+                li.innerHTML = `<a href="${link}" class="copy underline transition-colors hover:text-gray-400">${link}</a>`;
+                li.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    copy(e.target.href);
+                    alert('Copied to clipboard!');
+                });
                 linksList.appendChild(li);
             });
             if (data.link.expiry) {
@@ -57,3 +62,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 });
+
+function copy(text) {
+    navigator.clipboard.writeText(text);
+}

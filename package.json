@@ -1,15 +1,22 @@
 {
     "name": "nova",
-    "version": "1.5.0",
+    "version": "2.0.0",
     "module": "src/index.ts",
     "type": "module",
     "private": true,
     "scripts": {
-        "build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
-        "watch": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
-        "start": "bun src/index.ts"
+        "dev": "bun --watch ./src/index.ts | pino-pretty & tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
+        "build": "bun build ./src/index.ts --target bun --outdir ./dist && tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
+        "start": "NODE_ENV=production bun dist/index.js",
+        "tw:watch": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
+        "tw:build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
+        "bun:dev": "bun --watch ./src/index.ts | pino-pretty",
+        "bun:build": "bun build ./src/index.ts --target bun --outdir ./dist"
     },
     "dependencies": {
+        "@elysiajs/html": "^1.2.0",
+        "@elysiajs/static": "^1.2.0",
+        "elysia": "^1.2.25",
         "mongoose": "^8.12.1",
         "parse-duration": "^2.1.3",
         "pino": "^9.6.0"
@@ -17,6 +24,7 @@
     "devDependencies": {
         "@tailwindcss/cli": "^4.0.14",
         "@types/bun": "latest",
+        "pino-pretty": "^13.0.0",
         "prettier": "^3.5.3",
         "prettier-plugin-tailwindcss": "^0.6.11",
         "tailwindcss": "^4.0.14"

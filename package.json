@@ -6,7 +6,7 @@
     "private": true,
     "scripts": {
         "dev": "bun --watch ./src/index.ts | pino-pretty & tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
-        "build": "bun build ./src/index.ts --target bun --outdir ./dist && tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
+        "build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
         "start": "NODE_ENV=production bun dist/index.js",
         "tw:watch": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
         "tw:build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",

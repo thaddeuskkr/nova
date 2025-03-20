@@ -8,19 +8,19 @@ import { Link } from './models';
 import type { Config } from './types';
 import { getIP, isValidUrl } from './utils';
 
-const databaseUrl = process.env.MONGODB_CONNECTION_URL;
-const port = Number(process.env.PORT || 3000);
-const level = process.env.LOG_LEVEL || 'info';
+const databaseUrl = Bun.env.MONGODB_CONNECTION_URL;
+const port = Number(Bun.env.PORT || 3000);
+const level = Bun.env.LOG_LEVEL || 'info';
 const apiAuth =
-    process.env.API_AUTH?.split(',')
+    Bun.env.API_AUTH?.split(',')
         .map((key) => key.trim())
         .filter((key) => key.length > 0 && key.toLowerCase() !== 'false') || [];
-const randomSlugLength = Number(process.env.RANDOM_SLUG_LENGTH || 6);
-const baseUrlRedirect = process.env.BASE_URL_REDIRECT || '';
-const prohibitedSlugs = process.env.PROHIBITED_SLUGS?.split(',')
+const randomSlugLength = Number(Bun.env.RANDOM_SLUG_LENGTH || 6);
+const baseUrlRedirect = Bun.env.BASE_URL_REDIRECT || '';
+const prohibitedSlugs = Bun.env.PROHIBITED_SLUGS?.split(',')
     .map((slug) => slug.trim())
     .filter((slug) => slug.length > 0) || ['api'];
-const expiredLinkScanInterval = Number(process.env.EXPIRED_LINK_SCAN_INTERVAL || 15) * 1000;
+const expiredLinkScanInterval = Number(Bun.env.EXPIRED_LINK_SCAN_INTERVAL || 15) * 1000;
 if (!databaseUrl) {
     console.error('Environment variable MONGODB_CONNECTION_URL not set, exiting');
     process.exit(1);
@@ -44,10 +44,9 @@ if (baseUrlRedirect.length > 0 && !isValidUrl(baseUrlRedirect) && baseUrlRedirec
 
 const $ = pino({ level });
 
-const packageJson = await Bun.file(join(import.meta.dir, '..', 'package.json')).json();
-const version = packageJson.version;
+const version = Bun.env.NOVA_VERSION ? `v${Bun.env.NOVA_VERSION}` : '[development]';
 
-$.info(`Starting Nova v${version}`);
+$.info(`Starting Nova ${version}`);
 
 const config: Config = {
     apiAuth,

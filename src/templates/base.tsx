@@ -18,7 +18,7 @@ export const Base = ({ title, children, version, ip }: { title: string; children
                     {children}
                     <p class='mt-4 text-sm text-gray-500'>
                         <a href='https://github.com/thaddeuskkr/nova' class='transition-colors hover:text-gray-600'>
-                            Nova by thaddeuskkr • v{version}
+                            Nova by thaddeuskkr • {version}
                         </a>
                         <br />
                         Your IP address is <code class='rounded-md bg-gray-900 px-1'>{ip}</code>

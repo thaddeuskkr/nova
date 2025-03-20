@@ -1,26 +1,20 @@
-FROM oven/bun:latest AS base
-WORKDIR /nova
+FROM oven/bun:alpine AS base
+WORKDIR /app
 
-FROM base AS install
-RUN mkdir -p /temp/dev
-COPY package.json bun.lock /temp/dev/
-RUN cd /temp/dev && bun install --frozen-lockfile
+FROM base AS build
 
-RUN mkdir -p /temp/prod
-COPY package.json bun.lock /temp/prod/
-RUN cd /temp/prod && bun install --frozen-lockfile --production
-
-FROM base AS prerelease
-COPY --from=install /temp/dev/node_modules node_modules
 COPY . .
+RUN apk update && apk add jq
+RUN bun install --frozen-lockfile
 
-RUN bun run build
+RUN NOVA_VERSION=$(jq -r '.version' package.json) \
+    bun run build --env=NOVA_*
 
 FROM base AS release
-COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /nova/src src
-COPY --from=prerelease /nova/public public
-COPY --from=prerelease /nova/package.json .
 
-USER bun
-ENTRYPOINT [ "bun", "start" ]
+WORKDIR /app
+
+COPY --from=build /app/dist dist
+COPY --from=build /app/public public
+
+CMD [ "bun", "./dist/index.js" ]

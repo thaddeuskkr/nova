@@ -5,7 +5,7 @@ const name = 'Nova';
 const description = 'A simple yet fast and feature-rich link shortener built using Bun.';
 const keywords = 'nova,tk,tkkr,thaddeuskkr,thaddeus,kuah';
 const color = '#000000';
-const ogimage = 'https://tkkr.link/assets/ogimage.jpg';
+const ogimage = 'https://tkkr.link/public/ogimage.jpg';
 const at = '@thaddeuskkr';
 const author = 'Thaddeus Kuah';
 

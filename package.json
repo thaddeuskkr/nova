@@ -7,7 +7,7 @@
     "scripts": {
         "dev": "bun --watch ./src/index.ts | pino-pretty & tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
         "build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
-        "start": "NODE_ENV=production bun dist/index.js",
+        "start": "NODE_ENV=production bun ./src/index.ts",
         "tw:watch": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify --watch",
         "tw:build": "tailwindcss -i ./src/public/css/input.css -o ./src/public/css/build.css --minify",
         "bun:dev": "bun --watch ./src/index.ts | pino-pretty",

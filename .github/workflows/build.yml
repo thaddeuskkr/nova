@@ -10,65 +10,96 @@ env:
     IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-    build:
-        strategy:
-            fail-fast: false
-            matrix:
-                platform:
-                    - linux/amd64
-                    - linux/arm64
-        runs-on: ${{ matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' || 'ubuntu-24.04' }}
-        permissions:
-            actions: write
-            contents: read
-            packages: write
-            id-token: write
-
+    prepare:
+        runs-on: ubuntu-latest
+        outputs:
+            matrix: ${{ steps.platforms.outputs.matrix }}
         steps:
-            - name: Prepare Build
-              run: |
-                  platform=${{ matrix.platform }}
-                  echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
-
             - name: Checkout repository
               uses: actions/checkout@v4
 
-            - name: Install cosign
-              if: github.event_name != 'pull_request'
-              uses: sigstore/cosign-installer@v3
+            - name: Create platforms matrix
+              id: platforms
+              run: |
+                  echo "matrix=$(docker buildx bake image-all --print | jq -cr '.target."image-all".platforms')" >> ${GITHUB_OUTPUT}
 
-            - name: Set up Docker Buildx
-              uses: docker/setup-buildx-action@v3
-
-            - name: Log into registry ${{ env.REGISTRY }}
-              if: github.event_name != 'pull_request'
-              uses: docker/login-action@v3
-              with:
-                  registry: ${{ env.REGISTRY }}
-                  username: ${{ github.actor }}
-                  password: ${{ secrets.GITHUB_TOKEN }}
+            - name: Show platforms matrix
+              run: |
+                  echo ${{ steps.platforms.outputs.matrix }}
 
             - name: Extract Docker metadata
               id: meta
               uses: docker/metadata-action@v5
               with:
                   images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                  tags: |
+                      type=ref,event=branch
+                      type=ref,event=pr
+                      type=sha,format=short,prefix=,suffix=
+                      type=raw,value=latest,enable={{is_default_branch}}
 
-            - name: Build and push by digest
-              id: build
-              uses: docker/build-push-action@v6
+            - name: Rename meta bake definition file
+              run: |
+                  mv "${{ steps.meta.outputs.bake-file }}" "${{ runner.temp }}/bake-meta.json"
+
+            - name: Upload meta bake definition
+              uses: actions/upload-artifact@v4
               with:
-                  context: .
-                  push: ${{ github.event_name != 'pull_request' }}
-                  tags: ${{ steps.meta.outputs.tags }}
-                  labels: ${{ steps.meta.outputs.labels }}
-                  platforms: ${{ matrix.platform }}
-                  outputs: type=image,push-by-digest=true,name-canonical=true,push=true
+                  name: bake-meta
+                  path: ${{ runner.temp }}/bake-meta.json
+                  if-no-files-found: error
+                  retention-days: 1
+
+    build:
+        needs:
+            - prepare
+        strategy:
+            fail-fast: false
+            matrix:
+                platform: ${{ fromJson(needs.prepare.outputs.matrix) }}
+        runs-on: ${{ matrix.platform == 'linux/arm64' && 'ubuntu-24.04-arm' || 'ubuntu-latest' }}
+        steps:
+            - name: Prepare to build
+              run: |
+                  platform=${{ matrix.platform }}
+                  echo "PLATFORM_PAIR=${platform//\//-}" >> $GITHUB_ENV
+
+            - name: Download meta bake definition
+              uses: actions/download-artifact@v4
+              with:
+                  name: bake-meta
+                  path: ${{ runner.temp }}
+
+            - name: Login to ${{ env.REGISTRY }}
+              uses: docker/login-action@v3
+              with:
+                  registry: ${{ env.REGISTRY }}
+                  username: ${{ github.actor }}
+                  password: ${{ secrets.GITHUB_TOKEN }}
+
+            - name: Set up QEMU
+              uses: docker/setup-qemu-action@v3
+
+            - name: Set up Docker Buildx
+              uses: docker/setup-buildx-action@v3
+
+            - name: Build Docker image
+              id: bake
+              uses: docker/bake-action@v6
+              with:
+                  files: |
+                      ./docker-bake.hcl
+                      cwd://${{ runner.temp }}/bake-meta.json
+                  targets: image
+                  set: |
+                      *.tags=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+                      *.platform=${{ matrix.platform }}
+                      *.output=type=image,push-by-digest=true,name-canonical=true,push=true
 
             - name: Export digest
               run: |
                   mkdir -p ${{ runner.temp }}/digests
-                  digest="${{ steps.build.outputs.digest }}"
+                  digest="${{ fromJSON(steps.bake.outputs.metadata).image['containerimage.digest'] }}"
                   touch "${{ runner.temp }}/digests/${digest#sha256:}"
 
             - name: Upload digest
@@ -84,6 +115,12 @@ jobs:
         needs:
             - build
         steps:
+            - name: Download meta bake definition
+              uses: actions/download-artifact@v4
+              with:
+                  name: bake-meta
+                  path: ${{ runner.temp }}
+
             - name: Download digests
               uses: actions/download-artifact@v4
               with:
@@ -91,8 +128,7 @@ jobs:
                   pattern: digests-*
                   merge-multiple: true
 
-            - name: Log into registry ${{ env.REGISTRY }}
-              if: github.event_name != 'pull_request'
+            - name: Login to ${{ env.REGISTRY }}
               uses: docker/login-action@v3
               with:
                   registry: ${{ env.REGISTRY }}
@@ -102,25 +138,12 @@ jobs:
             - name: Set up Docker Buildx
               uses: docker/setup-buildx-action@v3
 
-            - name: Extract Docker metadata
-              id: meta
-              uses: docker/metadata-action@v5
-              with:
-                  images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-                  tags: |
-                      type=ref,event=branch
-                      type=ref,event=pr
-                      type=sha,format=short,prefix=,suffix=
-                      type=semver,pattern={{version}}
-                      type=semver,pattern={{major}}.{{minor}}
-                      type=raw,value=latest,enable={{is_default_branch}}
-
             - name: Create manifest list and push
               working-directory: ${{ runner.temp }}/digests
               run: |
-                  docker buildx imagetools create $(jq -cr '.tags | map("-t " + .) | join(" ")' <<< "$DOCKER_METADATA_OUTPUT_JSON") \
+                  docker buildx imagetools create $(jq -cr '.target."docker-metadata-action".tags | map(select(startswith("${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}")) | "-t " + .) | join(" ")' ${{ runner.temp }}/bake-meta.json) \
                     $(printf '${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@sha256:%s ' *)
 
             - name: Inspect image
               run: |
-                  docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta.outputs.version }}
+                  docker buildx imagetools inspect ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:$(jq -r '.target."docker-metadata-action".args.DOCKER_META_VERSION' ${{ runner.temp }}/bake-meta.json)

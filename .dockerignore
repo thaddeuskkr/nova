@@ -11,3 +11,4 @@ LICENSE
 .env*
 .editorconfig
 .prettierc
+docker-bake.hcl

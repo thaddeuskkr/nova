@@ -27,7 +27,6 @@ docker run \
   --restart unless-stopped \
   -p 80:3000 \
   -e PORT="3000" \
-  -e NODE_ENV="production" \
   -e MONGODB_CONNECTION_URL="<YOUR_DATABASE_URL>" \
   -e LOG_LEVEL="info" \
   -e API_AUTH="false" \
@@ -51,8 +50,7 @@ services:
         ports:
             - '80:3000'
         environment:
-            PORT: 3000 # The port to host Nova on,
-            NODE_ENV: production # The environment to run Nova in. Set to "production" for production environments.
+            PORT: 3000 # The port to host Nova on.
             MONGODB_CONNECTION_URL: YOUR_CONNECTION_URL # The connection URL to your MongoDB database.
             LOG_LEVEL: info # The level of logging to use. Set to "debug" for more verbose logging.
             API_AUTH: false # The password required to access Nova's API. Can be left empty or set to false to disable authentication.

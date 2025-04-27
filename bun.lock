@@ -7,7 +7,7 @@
         "@elysiajs/html": "^1.2.0",
         "@elysiajs/static": "^1.2.0",
         "elysia": "^1.2.25",
-        "mongoose": "^8.13.3",
+        "mongoose": "^8.14.0",
         "parse-duration": "^2.1.4",
         "pino": "^9.6.0",
       },

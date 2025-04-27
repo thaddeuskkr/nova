@@ -8,10 +8,6 @@ export const url: string = '/';
 export const route: Route = ({ $, version, config }) =>
     new Elysia().get(url, ({ server, request, redirect, query, set }) => {
         const ip = getIP(request, server);
-        if (config.baseUrlRedirect.length && config.baseUrlRedirect.toLowerCase() !== 'false') {
-            $.debug(`307 ${url} | ${ip}`);
-            return redirect(config.baseUrlRedirect, 307);
-        }
         const apiAuth = Object.keys(query)[0];
         set.headers['content-type'] = 'text/html';
         if (!config.apiAuth.length || (apiAuth && config.apiAuth.includes(apiAuth))) {
@@ -67,6 +63,10 @@ export const route: Route = ({ $, version, config }) =>
                     </div>
                 </Base>
             );
+        }
+        if (config.baseUrlRedirect.length && config.baseUrlRedirect.toLowerCase() !== 'false') {
+            $.debug(`307 ${url} | ${ip}`);
+            return redirect(config.baseUrlRedirect, 307);
         }
         return (
             <Base title='Nova' version={version} ip={ip}>

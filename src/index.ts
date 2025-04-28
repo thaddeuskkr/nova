@@ -80,6 +80,7 @@ import * as routes from './routes';
 app.use(routes.main({ $, version, config }));
 app.use(routes.slugs({ $, version, config }));
 app.use(routes.api.shorten({ $, version, config }));
+app.use(routes.api.status({ $, version, config }));
 
 app.listen(port);
 

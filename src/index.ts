@@ -112,9 +112,8 @@ if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
                     return { error: 'Failed to fetch user profile' };
                 }
                 if (!oidcUserAllowed(profile)) {
-                    set.status = 401;
                     $.debug(`401 ${path} | ${getIP(request, server)}`);
-                    return { error: 'Unauthorized' };
+                    return redirect('/');
                 }
                 const existingUser = await User.findOne({ sub: profile.sub });
                 token.value = existingUser?.token || randomBytes(64).toBase64();

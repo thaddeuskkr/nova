@@ -87,6 +87,7 @@ const app = new Elysia()
     })
     .use(staticPlugin({ assets: join(import.meta.dir, '..', 'public') }))
     .use(html({ autoDetect: false, autoDoctype: false }));
+
 if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
     app.use(
         oauth2({

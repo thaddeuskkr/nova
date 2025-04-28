@@ -77,6 +77,9 @@ export const route: Route = ({ $, version, config }) =>
                 <Base title='Nova' version={version} ip={ip}>
                     <h1 class='mb-4 text-2xl font-bold'>Nova</h1>
                     <p class='text-gray-400'>A simple yet relatively feature-rich link shortener.</p>
+                    <a href='/api/auth/google' class='mt-2 underline transition-colors hover:text-gray-400'>
+                        Sign in with Google
+                    </a>
                 </Base>
             );
         },

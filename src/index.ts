@@ -128,6 +128,24 @@ if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
                     token: t.Optional(t.String()),
                 }),
             },
+        )
+        .get(
+            '/api/auth/logout',
+            async ({ cookie: { token }, redirect, path, request, server }) => {
+                const user = await User.findOne({ token });
+                if (user) {
+                    user.token = null;
+                    await user.save();
+                    $.debug(`User ${user.given_name} (${user.sub}) logged out`);
+                }
+                token.expires = new Date(Date.now() - 1000);
+                return redirect('/');
+            },
+            {
+                cookie: t.Cookie({
+                    token: t.Optional(t.String()),
+                }),
+            },
         );
 }
 

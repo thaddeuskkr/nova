@@ -136,7 +136,7 @@ if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
                 if (user) {
                     user.token = null;
                     await user.save();
-                    $.debug(`User ${user.given_name} (${user.sub}) logged out`);
+                    $.debug(`User ${user.email} (${user.sub}) logged out`);
                 }
                 token.expires = new Date(Date.now() - 1000);
                 return redirect('/');

@@ -11,7 +11,7 @@ export const route: Route = ({ $, version, config }) =>
         url,
         async ({ server, request, redirect, query, set, path, cookie: { token } }) => {
             const ip = getIP(request, server);
-            const user = await User.findOne({ token: token.value });
+            const user = token.value?.length ? await User.findOne({ token: token.value }) : null;
             const apiAuth = Object.keys(query)[0];
             set.headers['content-type'] = 'text/html';
             if (!config.apiAuth.length || (apiAuth && config.apiAuth.includes(apiAuth)) || oidcUserAllowed(user)) {

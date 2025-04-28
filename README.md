@@ -8,6 +8,7 @@ Nova is a simple link shortener built using TypeScript and Bun.
 
 - A working minimalistic web interface
 - An API that is easy to understand and use
+- Google OIDC support for link creation
 - Password-protected short URLs
 - Customisable short URLs
 - Customisable short URL validity/expiry
@@ -19,7 +20,7 @@ Do note, the Docker configurations are the exact same, but with different method
 
 ### Docker (CLI)
 
-Run the following command directly. Do replace the environment variables (`-e`) and port mapping (`-p`) with a configuration more relevant to you.
+Run the following command directly. Do replace the environment variables (`-e`) and port mapping (`-p`) with a configuration more relevant to you. Please read `.env.example` for details regarding the environment variables.
 
 ```sh
 docker run \
@@ -34,6 +35,10 @@ docker run \
   -e BASE_URL_REDIRECT="false" \
   -e PROHIBITED_SLUGS="api" \
   -e EXPIRED_LINK_SCAN_INTERVAL="15" \
+  # -e GOOGLE_OAUTH2_CLIENT_ID="" \
+  # -e GOOGLE_OAUTH2_CLIENT_SECRET="" \
+  # -e GOOGLE_OAUTH2_REDIRECT_URI="" \
+  # -e GOOGLE_OAUTH2_ALLOWED_USERS="" \
   ghcr.io/thaddeuskkr/nova:latest
 ```
 

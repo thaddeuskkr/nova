@@ -96,6 +96,7 @@ if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
         .get('/api/auth/google', async ({ oauth2, redirect }) => {
             const url = oauth2.createURL('Google', ['openid', 'email', 'profile']);
             url.searchParams.set('access_type', 'offline');
+            url.searchParams.set('prompt', 'select_account');
             return redirect(url.href);
         })
         .get(

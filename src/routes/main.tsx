@@ -54,6 +54,9 @@ export const route: Route = ({ $, version, config }) =>
                                 class='w-full cursor-pointer rounded-md bg-gray-800 px-2 py-1 transition-colors hover:bg-gray-700 hover:text-gray-100'>
                                 Shorten
                             </button>
+                            <a href='/api/auth/logout' class='mt-2 text-center underline transition-colors hover:text-gray-400'>
+                                Sign out
+                            </a>
                         </form>
                         <div class='hidden flex-col items-center justify-center space-y-2' id='result'>
                             <h1 class='text-2xl font-bold'>Link shortened!</h1>

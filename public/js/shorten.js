@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     const urlParams = new URLSearchParams(window.location.search);
+    const sessionToken = getCookie('token');
     const [auth] = urlParams.keys();
     document.getElementById('another').addEventListener('click', () => {
         document.getElementById('shorten').classList.remove('hidden');
@@ -19,7 +20,7 @@ document.addEventListener('DOMContentLoaded', () => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: auth,
+                Authorization: sessionToken || auth,
             },
             body: JSON.stringify({ url, slugs, password, expires }),
         });
@@ -65,4 +66,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function copy(text) {
     navigator.clipboard.writeText(text);
+}
+
+function getCookie(name) {
+    const match = document.cookie.split('; ').find((row) => row.startsWith(`${encodeURIComponent(name)}=`));
+    return match ? decodeURIComponent(match.split('=')[1]) : null;
 }

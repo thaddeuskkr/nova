@@ -1,9 +1,9 @@
 import { randomBytes } from 'crypto';
 import { Elysia, t } from 'elysia';
 import parse from 'parse-duration';
-import { Link } from '../../models';
+import { Link, User } from '../../models';
 import type { Route } from '../../types';
-import { getIP, isValidUrl } from '../../utils';
+import { getIP, isValidUrl, oidcUserAllowed } from '../../utils';
 
 export const url: string = '/api/shorten';
 export const route: Route = ({ $, config }) =>
@@ -11,7 +11,8 @@ export const route: Route = ({ $, config }) =>
         url,
         async ({ body, headers: { authorization }, set, request, server, path }) => {
             const ip = getIP(request, server);
-            if (config.apiAuth.length && (!authorization || !config.apiAuth.includes(authorization))) {
+            const user = await User.findOne({ token: authorization });
+            if (config.apiAuth.length && (!authorization || !config.apiAuth.includes(authorization)) && !oidcUserAllowed(user)) {
                 set.status = 401;
                 $.debug(`401 ${path} | ${ip}`);
                 return { error: 'Unauthorized' };

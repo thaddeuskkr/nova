@@ -5,7 +5,7 @@ import { getIP } from '../../utils';
 
 export const url: string = '/api/status';
 export const route: Route = ({ config }) =>
-    new Elysia().get(url, async ({ request, server, set }) => {
+    new Elysia().post(url, async ({ request, server, set }) => {
         const ip = getIP(request, server);
         set.headers['content-type'] = 'application/json';
         const links = await Link.find();

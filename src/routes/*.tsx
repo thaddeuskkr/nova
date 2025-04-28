@@ -6,13 +6,14 @@ import type { Route } from '../types';
 import { getIP } from '../utils';
 
 export const url: string = '*';
-export const route: Route = ({ version }) =>
+export const route: Route = ({ $, version }) =>
     new Elysia().get(url, async ({ request, redirect, server, path, query, set }) => {
         const ip = getIP(request, server);
         const link = await Link.findOne({ slugs: path.slice(1) });
         if (!link) {
             set.status = 404;
             set.headers['content-type'] = 'text/html';
+            $.debug(`404 ${path} | ${ip}`);
             return (
                 <Base title='Nova • 404' version={version} ip={ip}>
                     <h1 class='mb-4 text-3xl font-bold'>
@@ -34,6 +35,7 @@ export const route: Route = ({ version }) =>
             if (!userPassword) {
                 set.status = 401;
                 set.headers['content-type'] = 'text/html';
+                $.debug(`401 ${path} | ${ip}`);
                 return (
                     <Base title='Nova • 401' version={version} ip={ip}>
                         <h1 class='mb-4 text-3xl font-bold text-gray-300'>
@@ -53,6 +55,7 @@ export const route: Route = ({ version }) =>
             if (!verified) {
                 set.status = 401;
                 set.headers['content-type'] = 'text/html';
+                $.debug(`401 ${path} | ${ip}`);
                 return (
                     <Base title='Nova • 401' version={version} ip={ip}>
                         <h1 class='mb-4 text-3xl font-bold text-gray-300'>
@@ -71,5 +74,6 @@ export const route: Route = ({ version }) =>
         }
         link.clicks ? link.clicks++ : (link.clicks = 1);
         await link.save();
+        $.debug(`307 ${path} | ${ip}`);
         return redirect(link.url, 307);
     });

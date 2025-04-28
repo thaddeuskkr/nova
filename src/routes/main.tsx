@@ -6,7 +6,7 @@ import { getIP } from '../utils';
 
 export const url: string = '/';
 export const route: Route = ({ $, version, config }) =>
-    new Elysia().get(url, ({ server, request, redirect, query, set }) => {
+    new Elysia().get(url, ({ server, request, redirect, query, set, path }) => {
         const ip = getIP(request, server);
         const apiAuth = Object.keys(query)[0];
         set.headers['content-type'] = 'text/html';
@@ -65,7 +65,7 @@ export const route: Route = ({ $, version, config }) =>
             );
         }
         if (config.baseUrlRedirect.length && config.baseUrlRedirect.toLowerCase() !== 'false') {
-            $.debug(`307 ${url} | ${ip}`);
+            $.debug(`307 ${path} | ${ip}`);
             return redirect(config.baseUrlRedirect, 307);
         }
         return (

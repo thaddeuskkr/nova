@@ -3,19 +3,22 @@ import { Elysia, t } from 'elysia';
 import parse from 'parse-duration';
 import { Link } from '../../models';
 import type { Route } from '../../types';
-import { isValidUrl } from '../../utils';
+import { getIP, isValidUrl } from '../../utils';
 
 export const url: string = '/api/shorten';
-export const route: Route = ({ config }) =>
+export const route: Route = ({ $, config }) =>
     new Elysia().post(
         url,
-        async ({ body, headers: { authorization }, set, request }) => {
+        async ({ body, headers: { authorization }, set, request, server, path }) => {
+            const ip = getIP(request, server);
             if (config.apiAuth.length && (!authorization || !config.apiAuth.includes(authorization))) {
                 set.status = 401;
+                $.debug(`401 ${path} | ${ip}`);
                 return { error: 'Unauthorized' };
             }
             if (!isValidUrl(body.url)) {
                 set.status = 400;
+                $.debug(`400 ${path} | ${ip}`);
                 return { error: 'Invalid URL' };
             }
             if (!body.slugs?.length) {
@@ -23,11 +26,13 @@ export const route: Route = ({ config }) =>
             } else {
                 if (await Link.findOne({ slugs: { $in: body.slugs } })) {
                     set.status = 400;
+                    $.debug(`400 ${path} | ${ip}`);
                     return { error: 'One or more custom slugs are already in use' };
                 }
                 const prohibitedSlugs = body.slugs.filter((slug) => config.prohibitedSlugs.includes(slug));
                 if (prohibitedSlugs.length) {
                     set.status = 400;
+                    $.debug(`400 ${path} | ${ip}`);
                     return { error: `The following slugs are prohibited: ${prohibitedSlugs.join(', ')}` };
                 }
             }
@@ -37,11 +42,13 @@ export const route: Route = ({ config }) =>
                 const expires = parse(body.expires.trim() || '');
                 if (expires === null) {
                     set.status = 400;
+                    $.debug(`400 ${path} | ${ip}`);
                     return {
                         error: 'Invalid validity period. Please provide a valid duration string (e.g. 1m, 1h, 1d, 1w, 1y)',
                     };
                 } else if (expires < 1000) {
                     set.status = 400;
+                    $.debug(`400 ${path} | ${ip}`);
                     return { error: 'Validity period must be at least 1 second' };
                 } else expiry = new Date(Date.now() + expires);
             }
@@ -91,9 +98,11 @@ export const route: Route = ({ config }) =>
                 password: t.Optional(t.Union([t.String(), t.Null()])),
                 expires: t.Optional(t.Union([t.String(), t.Null()])),
             }),
-            error: ({ set, code, error }) => {
+            error: ({ set, code, error, request, server, path }) => {
+                const ip = getIP(request, server);
                 if (code !== 'VALIDATION') throw error;
                 set.status = 400;
+                $.debug(`400 ${path} | ${ip}`);
                 return { errors: [...error.validator.Errors(error.value)].map((e) => e.message) };
             },
         },

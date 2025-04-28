@@ -11,7 +11,7 @@ export const route: Route = ({ $, config }) =>
         url,
         async ({ body, headers: { authorization }, set, request, server, path }) => {
             const ip = getIP(request, server);
-            const user = await User.findOne({ token: authorization });
+            const user = authorization?.length ? await User.findOne({ token: authorization }) : null;
             if (config.apiAuth.length && (!authorization || !config.apiAuth.includes(authorization)) && !oidcUserAllowed(user)) {
                 set.status = 401;
                 $.debug(`401 ${path} | ${ip}`);

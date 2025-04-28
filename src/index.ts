@@ -132,7 +132,7 @@ if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
         .get(
             '/api/auth/logout',
             async ({ cookie: { token }, redirect, path, request, server }) => {
-                const user = await User.findOne({ token });
+                const user = token.value?.length ? await User.findOne({ token }) : null;
                 if (user) {
                     user.token = null;
                     await user.save();

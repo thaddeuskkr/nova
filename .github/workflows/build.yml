@@ -31,9 +31,9 @@ jobs:
               run: |
                   echo ${{ steps.platforms.outputs.matrix }}
 
-            - name: Get current package version
-              uses: martinbeentjes/npm-get-version-action@v1.3.1
-              id: package-version
+            - name: Read package.json
+              id: package-json
+              uses: jaywcjlove/github-action-package@main
 
             - name: Extract Docker metadata
               id: meta
@@ -45,7 +45,7 @@ jobs:
                       type=ref,event=pr
                       type=sha,format=short,prefix=,suffix=
                       type=raw,value=latest,enable={{ is_default_branch }}
-                      type=raw,value=${{ steps.package-version.outputs.current-version }},enable={{ is_default_branch }}
+                      type=raw,value=${{ steps.package-json.outputs.version }},enable={{ is_default_branch }}
 
             - name: Rename meta bake definition file
               run: |

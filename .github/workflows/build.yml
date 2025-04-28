@@ -31,6 +31,10 @@ jobs:
               run: |
                   echo ${{ steps.platforms.outputs.matrix }}
 
+            - name: Read package.json
+              id: package-json
+              uses: jaywcjlove/github-action-package@main
+
             - name: Extract Docker metadata
               id: meta
               uses: docker/metadata-action@v5
@@ -40,7 +44,8 @@ jobs:
                       type=ref,event=branch
                       type=ref,event=pr
                       type=sha,format=short,prefix=,suffix=
-                      type=raw,value=latest,enable={{is_default_branch}}
+                      type=raw,value=latest,enable={{ is_default_branch }}
+                      type=raw,value={{ steps.package-json.outputs.version }},enable={{ is_default_branch }}
 
             - name: Rename meta bake definition file
               run: |

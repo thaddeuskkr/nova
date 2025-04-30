@@ -19,7 +19,7 @@
         "arctic": "^3.6.0",
         "elysia": "^1.2.25",
         "elysia-oauth2": "^2.0.0",
-        "mongoose": "^8.14.0",
+        "mongoose": "^8.14.1",
         "parse-duration": "^2.1.4",
         "pino": "^9.6.0"
     },

@@ -120,6 +120,7 @@ if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
                 const existingUser = await User.findOne({ sub: profile.sub });
                 token.value = existingUser?.token || randomBytes(64).toBase64();
                 token.expires = new Date(Date.now() + 60 * 60 * 24 * 7 * 1000);
+                token.secure = true;
                 await User.updateOne({ sub: profile.sub }, { ...profile, token: token.value }, { upsert: true });
                 $.debug(`User ${profile.email} (${profile.sub}) logged in`);
                 return redirect('/');
@@ -132,7 +133,7 @@ if (googleOIDC.clientId && googleOIDC.clientSecret && googleOIDC.redirectUri) {
         )
         .get(
             '/api/auth/logout',
-            async ({ cookie: { token }, redirect, path, request, server }) => {
+            async ({ cookie: { token }, redirect }) => {
                 const user = token.value?.length ? await User.findOne({ token }) : null;
                 if (user) {
                     user.token = null;

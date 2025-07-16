@@ -14,7 +14,7 @@ export function isValidUrl(string: string): boolean {
 }
 
 export function getIP(request: Request, server: Server | null): string {
-    return toIPv4(request.headers.get('x-forwarded-for') || server?.requestIP(request)?.address || 'unknown');
+    return toIPv4(request.headers.get('cf-connecting-ip') || request.headers.get('x-forwarded-for') || server?.requestIP(request)?.address || 'unknown');
 }
 
 export function toIPv4(ip: string): string {

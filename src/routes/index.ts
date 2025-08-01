@@ -1,5 +1,5 @@
 // Main page & URL handler
-export { route as slugs } from './*.tsx';
+export { route as slugs } from './all.tsx';
 export { route as main } from './main.tsx';
 
 // API Routes
